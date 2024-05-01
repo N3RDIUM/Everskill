@@ -14,4 +14,5 @@ Everskill is an open-source, universal skill learning platform which is inspired
 
 # Motivation
 We were inspired to make this platform by the creator of Duolingo. For more details, you can watch his Ted talk (linked below)
-<a href="https://www.youtube.com/watch?v=P6FORpg0KVo"><p align=center><img src="https://img.youtube.com/vi/P6FORpg0KVo/hqdefault.jpg" width=80%/></p></a>
+<p align=center><img src="https://img.youtube.com/vi/P6FORpg0KVo/hqdefault.jpg" width=80%/></p>
+<p align=right><a href="https://www.youtube.com/watch?v=P6FORpg0KVo">Click here to watch!</a></p>
