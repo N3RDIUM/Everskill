@@ -10,7 +10,10 @@
 Everskill is an open-source, universal skill learning platform which is inspired by Duolingo. It uses principles from games and social media to make learning your dream skill fun (and kind of addictive too).
 
 # Roadmap
-- [ ] Start writing the backend [assignee: n3rdium](https://github.com/n3rdium)
+See the project log [here](project-log.md)!
+
+- [x] Get things sorted (assignees: [n3rdium](https://github.com/n3rdium))
+- [ ] Write a basic backend (assignees: [n3rdium](https://github.com/n3rdium))
 
 # Motivation
 We were inspired to make this platform by the creator of Duolingo. For more details, you can watch his Ted talk (linked below)
