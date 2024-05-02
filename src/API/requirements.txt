@@ -1,0 +1,2 @@
+Flask
+firebase-admin
