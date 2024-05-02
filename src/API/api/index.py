@@ -8,12 +8,7 @@ dev = False
 
 # Initialization stuff
 app = Flask(__name__)
-creds = "everskill-pk.json"
-contents = os.environ['FB_AUTH']
-with open(creds, 'w') as f:
-    f.write(contents)
-cred = credentials.Certificate(creds)
-os.remove(creds)
+cred = credentials.Certificate(os.environ['FB_AUTH'])
 firebase = initialize_app(cred)
 db = firestore.client()
 
