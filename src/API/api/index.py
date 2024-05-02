@@ -1,15 +1,21 @@
 # Imports
+import os
 from flask import Flask, request, jsonify
 from firebase_admin import initialize_app, firestore, credentials
 
-# Initialization stuff
-app = Flask(__name__)
-cred = credentials.Certificate("everskill-pk.json")
-firebase = initialize_app(cred)
-db = firestore.client()
-
 # DEV MODE
 dev = False
+
+# Initialization stuff
+app = Flask(__name__)
+creds = "everskill-pk.json"
+contents = os.environ['FB_AUTH']
+with open(creds, 'w') as f:
+    f.write(contents)
+cred = credentials.Certificate(creds)
+os.remove(creds)
+firebase = initialize_app(cred)
+db = firestore.client()
 
 # Routing
 @app.route("/")

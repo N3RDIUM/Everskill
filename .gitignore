@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 everskill-pk.json
+.vercel
