@@ -1,5 +1,5 @@
 # Imports
-import os
+import os, json
 from flask import Flask, request, jsonify
 from firebase_admin import initialize_app, firestore, credentials
 
@@ -8,7 +8,7 @@ dev = False
 
 # Initialization stuff
 app = Flask(__name__)
-cred = credentials.Certificate(os.environ['FB_AUTH'])
+cred = credentials.Certificate(json.loads(os.environ['FB_AUTH']))
 firebase = initialize_app(cred)
 db = firestore.client()
 
