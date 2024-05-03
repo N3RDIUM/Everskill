@@ -1,5 +1,6 @@
 # Imports
 import os, json
+from pywebpush import webpush
 from flask import Flask, request, jsonify
 from firebase_admin import initialize_app, firestore, credentials
 
@@ -77,7 +78,40 @@ def get_user():
         "success": True
     })
     
-@app.route('/subscribe', methods=['POST'])
+@app.route('subscribe-pushnotify', methods=['POST'])
+def sub_push():
+    options = request.get_json()
+    
+    # Check request
+    if 'username' not in options:
+        return jsonify({
+            "response": "ERROR: Username not provided.",
+            "success": False
+        })
+        
+    if 'subscription' not in options:
+        return jsonify({
+            "response": "ERROR: Username not provided.",
+            "success": False
+        })
+        
+    # Validate username, error if it doesn't exist
+    if not db.collection('users').document(options['username']).get().exists:
+        return jsonify({
+            "response": "ERROR: Username does not exist.",
+            "success": False
+        })
+        
+    # Add subscription to user
+    db.collection('users').document(options['username']).update({
+        "subscription": options['subscription']
+    })
+    
+    return jsonify({
+        "success": True
+    })
+    
+@app.route('/subscribe-course', methods=['POST'])
 def sub_course():
     options = request.get_json()
     
@@ -114,13 +148,13 @@ def sub_course():
         "courses": courses + [options['course_id']]
     })
     
-    # TODO: Email sending logic
+    # TODO: Notification sending logic
     
     return jsonify({
         "success": True
     })
 
-@app.route('/unsubscribe', methods=['POST'])
+@app.route('/unsubscribe-course', methods=['POST'])
 def unsub_course():
     options = request.get_json()
     
@@ -164,7 +198,7 @@ def unsub_course():
         "courses": courses + [options['course_id']]
     })
     
-    # TODO: Email sending logic
+    # TODO: Notification sending logic
     
     return jsonify({
         "success": True

@@ -1,11 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Template</title>=
-</head>
-<body>
-    Work in progress!
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Template</title>=
+        <script>
+            const pubkey = 'BLTE-_RXSc6Cm5pVc8-BcU88zwqPbm1ry4NR3Z7hebv4yLf60eIzwj9SIMtPkAAXoVrlnMtzGAh9WANRgIkn2rc';
+
+            function urlBase64ToUint8Array(base64String) {
+                const padding = '='.repeat((4 - base64String.length % 4) % 4);
+                const base64 = (base64String + padding)
+                .replace(/\-/g, '+')
+                .replace(/_/g, '/');
+                const rawData = window.atob(base64);
+                const outputArray = new Uint8Array(rawData.length);
+                for (let i = 0; i < rawData.length; ++i) {
+                    outputArray[i] = rawData.charCodeAt(i);
+                }
+                return outputArray;
+            }
+
+            function subscribeUser() {
+                event.waitUntil(
+                    self.registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(pubkey),
+                }).then(function(subscription) {
+                    return fetch('everskill.vercel.app/', {
+                        method: 'POST',
+                        body: {
+                            user: 'someone',
+                            subscription: JSON.stringify(subscription)
+                        },
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                }));
+            }
+        </script>
+    </head>
+    <body>
+        <button onclick="subscribeUser()">Click me to subskrybe</button>
+    </body>
 </html>
