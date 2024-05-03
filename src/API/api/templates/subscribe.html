@@ -54,10 +54,10 @@
                         );
                         fetch('/subscribe-pushnotify', {
                             method: 'POST',
-                            body: {
+                            body: JSON.stringify({
                                 user: 'someone',
                                 subscription: JSON.stringify(pushSubscription)
-                            },
+                            }),
                             headers: {
                                 'Content-Type': 'application/json'
                             }
