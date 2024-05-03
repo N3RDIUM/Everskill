@@ -5,6 +5,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Template</title>=
         <script>
+            function askPermission() {
+                return new Promise(function (resolve, reject) {
+                    const permissionResult = Notification.requestPermission(function (result) {
+                        resolve(result);
+                    });
+
+                    if (permissionResult) {
+                        permissionResult.then(resolve, reject);
+                    }
+                }).then(function (permissionResult) {
+                    if (permissionResult !== 'granted') {
+                        throw new Error("We weren't granted permission.");
+                    }
+                });
+            }
+
             const pubkey = 'BLTE-_RXSc6Cm5pVc8-BcU88zwqPbm1ry4NR3Z7hebv4yLf60eIzwj9SIMtPkAAXoVrlnMtzGAh9WANRgIkn2rc';
 
             function urlBase64ToUint8Array(base64String) {
@@ -21,26 +37,37 @@
             }
 
             function subscribeUser() {
-                event.waitUntil(
-                    self.registration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: urlBase64ToUint8Array(pubkey),
-                }).then(function(subscription) {
-                    return fetch('everskill.vercel.app/', {
-                        method: 'POST',
-                        body: {
-                            user: 'someone',
-                            subscription: JSON.stringify(subscription)
-                        },
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
+                return navigator.serviceWorker
+                    .register('/service-worker.js')
+                    .then(function (registration) {
+                        const subscribeOptions = {
+                            userVisibleOnly: true,
+                            applicationServerKey: urlBase64ToUint8Array(pubkey)
+                        };
+
+                        return registration.pushManager.subscribe(subscribeOptions);
+                    })
+                    .then(function (pushSubscription) {
+                        console.log(
+                            'Received PushSubscription: ',
+                            JSON.stringify(pushSubscription),
+                        );
+                        fetch('everskill.vercel.app/', {
+                            method: 'POST',
+                            body: {
+                                user: 'someone',
+                                subscription: JSON.stringify(subscription)
+                            },
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        return pushSubscription;
                     });
-                }));
             }
         </script>
     </head>
     <body>
-        <button onclick="subscribeUser()">Click me to subskrybe</button>
+        <button onclick="askPermission(); subscribeUser()">Click me to subskrybe</button>
     </body>
 </html>

@@ -78,7 +78,7 @@ def get_user():
         "success": True
     })
     
-@app.route('subscribe-pushnotify', methods=['POST'])
+@app.route('/subscribe-pushnotify', methods=['POST'])
 def sub_push():
     options = request.get_json()
     
