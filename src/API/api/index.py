@@ -5,14 +5,14 @@ from flask import Flask, request, jsonify, render_template
 from firebase_admin import initialize_app, firestore, credentials
 
 # DEV MODE
-dev = False
+dev = True
 
 # Initialization stuff
 app = Flask(__name__)
-cred = credentials.Certificate(json.loads(os.environ['FB_AUTH']))
-vapid_private_key = os.environ['VAPID_PRIVATE_KEY']
-firebase = initialize_app(cred)
-db = firestore.client()
+# cred = credentials.Certificate(json.loads(os.environ['FB_AUTH']))
+# vapid_private_key = os.environ['VAPID_PRIVATE_KEY']
+# firebase = initialize_app(cred)
+# db = firestore.client()
 
 # Routing
 @app.route("/")
