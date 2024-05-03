@@ -52,7 +52,7 @@
                             'Received PushSubscription: ',
                             JSON.stringify(pushSubscription),
                         );
-                        fetch('https://everskill.vercel.app/subscribe-pushnotify', {
+                        fetch('/subscribe-pushnotify', {
                             method: 'POST',
                             body: {
                                 user: 'someone',
