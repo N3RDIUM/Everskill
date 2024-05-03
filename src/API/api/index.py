@@ -1,7 +1,7 @@
 # Imports
 import os, json
 from pywebpush import webpush
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from firebase_admin import initialize_app, firestore, credentials
 
 # DEV MODE
@@ -10,6 +10,7 @@ dev = False
 # Initialization stuff
 app = Flask(__name__)
 cred = credentials.Certificate(json.loads(os.environ['FB_AUTH']))
+vapid_private_key = os.environ['VAPID_PRIVATE_KEY']
 firebase = initialize_app(cred)
 db = firestore.client()
 
@@ -20,6 +21,10 @@ def index():
         "response": "Everskill API is up!",
         "success": True
     })
+    
+@app.route('/subscribe-push')
+def subscribe_push():
+    return render_template('subscribe.html')
 
 # TODO! Check for an auth token in POST routes
 @app.route('/new-user', methods=['POST'])
@@ -104,7 +109,7 @@ def sub_push():
         
     # Add subscription to user
     db.collection('users').document(options['username']).update({
-        "subscription": options['subscription']
+        "webpush": options['subscription']
     })
     
     return jsonify({
@@ -148,7 +153,16 @@ def sub_course():
         "courses": courses + [options['course_id']]
     })
     
-    # TODO: Notification sending logic
+    
+    # Send a notification if the user has subscribed to notifications
+    if 'webpush' in db.collection('users').document(options['username']).get().to_dict():
+        course_title = db.collection('courses').document(options['course_id']).get().to_dict()['title']
+        webpush(
+            db.collection('users').document(options['username']).get().to_dict()['webpush'],
+            f"Welcome aboard! You have successfully subscribed to the course: {course_title}",
+            vapid_private_key=vapid_private_key,
+            vapid_claims={"sub": "https://everskill.vercel.app/"}
+        )
     
     return jsonify({
         "success": True
@@ -198,7 +212,15 @@ def unsub_course():
         "courses": courses + [options['course_id']]
     })
     
-    # TODO: Notification sending logic
+    # Send a notification if the user has subscribed to notifications
+    if 'webpush' in db.collection('users').document(options['username']).get().to_dict():
+        course_title = db.collection('courses').document(options['course_id']).get().to_dict()['title']
+        webpush(
+            db.collection('users').document(options['username']).get().to_dict()['webpush'],
+            f"Sorry to see you go! You have successfully unsubscribed from the course: {course_title}",
+            vapid_private_key=vapid_private_key,
+            vapid_claims={"sub": "https://everskill.vercel.app/"}
+        )
     
     return jsonify({
         "success": True
