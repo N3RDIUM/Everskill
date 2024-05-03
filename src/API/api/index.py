@@ -158,7 +158,7 @@ def sub_course():
     if 'webpush' in db.collection('users').document(options['username']).get().to_dict():
         course_title = db.collection('courses').document(options['course_id']).get().to_dict()['title']
         webpush(
-            db.collection('users').document(options['username']).get().to_dict()['webpush'],
+            json.loads(str(db.collection('users').document(options['username']).get().to_dict()['webpush'])),
             f"Welcome aboard! You have successfully subscribed to the course: {course_title}",
             vapid_private_key=vapid_private_key,
             vapid_claims={"sub": "https://everskill.vercel.app/"}
@@ -216,7 +216,7 @@ def unsub_course():
     if 'webpush' in db.collection('users').document(options['username']).get().to_dict():
         course_title = db.collection('courses').document(options['course_id']).get().to_dict()['title']
         webpush(
-            db.collection('users').document(options['username']).get().to_dict()['webpush'],
+            json.loads(str(db.collection('users').document(options['username']).get().to_dict()['webpush'])),
             f"Sorry to see you go! You have successfully unsubscribed from the course: {course_title}",
             vapid_private_key=vapid_private_key,
             vapid_claims={"sub": "https://everskill.vercel.app/"}
