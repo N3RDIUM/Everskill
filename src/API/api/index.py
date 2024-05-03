@@ -112,6 +112,13 @@ def sub_push():
         "webpush": options['subscription']
     })
     
+    webpush(
+        json.loads(str(db.collection('users').document(options['username']).get().to_dict()['webpush'])),
+        f"Welcome aboard! You have successfully subscribed to push notifications.",
+        vapid_private_key=vapid_private_key,
+        vapid_claims={"sub": "https://everskill.vercel.app/"}
+    )
+    
     return jsonify({
         "success": True
     })
