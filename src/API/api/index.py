@@ -114,7 +114,9 @@ def sub_push():
     
     webpush(
         json.loads(str(db.collection('users').document(options['username']).get().to_dict()['webpush'])),
-        f"Welcome aboard! You have successfully subscribed to push notifications.",
+        json.dumps({
+            "body": 'Welcome aboard! You have successfully subscribed to push notifications.'
+        }),
         vapid_private_key=vapid_private_key,
         vapid_claims={"sub": "mailto:n3rdium@gmail.com"}
     )
@@ -166,7 +168,9 @@ def sub_course():
         course_title = db.collection('courses').document(options['course_id']).get().to_dict()['title']
         webpush(
             json.loads(str(db.collection('users').document(options['username']).get().to_dict()['webpush'])),
-            f"Welcome aboard! You have successfully subscribed to the course: {course_title}",
+            json.dumps({
+                "body": f"Welcome aboard! You have successfully subscribed to the course: {course_title}",
+            }),
             vapid_private_key=vapid_private_key,
             vapid_claims={"sub": "https://everskill.vercel.app/"}
         )
@@ -224,7 +228,9 @@ def unsub_course():
         course_title = db.collection('courses').document(options['course_id']).get().to_dict()['title']
         webpush(
             json.loads(str(db.collection('users').document(options['username']).get().to_dict()['webpush'])),
-            f"Sorry to see you go! You have successfully unsubscribed from the course: {course_title}",
+            json.dumps({
+                "body": f"Sorry to see you go! You have successfully unsubscribed from the course: {course_title}",
+            }),
             vapid_private_key=vapid_private_key,
             vapid_claims={"sub": "https://everskill.vercel.app/"}
         )
