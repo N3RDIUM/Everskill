@@ -1,8 +1,8 @@
 function receivePushNotification(event) {
-    console.log("[Service Worker] Push Received.", event.data.text());
+    console.log("[Service Worker] Push Received.", event.data);
     var options = {
-        body: "This notification was generated from a push!"
+        body:  event.data.text()
     };
-    event.waitUntil(self.registration.showNotification("Hello world!", options));
+    event.waitUntil(self.registration.showNotification("Everskill", options));
 }
 self.addEventListener("push", receivePushNotification);
