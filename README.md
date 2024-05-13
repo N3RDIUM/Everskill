@@ -1,6 +1,12 @@
 ![Everskill](./icons/EverskillLogoDark.png)
 Everskill is an open-source, universal skill learning platform which is inspired by Duolingo. It uses principles from games and social media to make learning your dream skill fun (and kind of addictive too).
 
+![GitHub repo size](https://img.shields.io/github/repo-size/n3rdium/everskill?style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/n3rdium/everskill?style=for-the-badge)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/n3rdium/everskill?style=for-the-badge)
+![GitHub License](https://img.shields.io/github/license/n3rdium/everskill?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/FOR-MOONHACKS-blue?style=for-the-badge)
+
 # Roadmap
 See the project log [here](project-log.md)!
 
