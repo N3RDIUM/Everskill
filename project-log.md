@@ -14,4 +14,4 @@
 [n3rdium](https://github.com/n3rdium): Finally got the backend push notification service working!
 
 # 13/05/2024
-[n3rdium](https://github.com/n3rdium): Figured out how to authenticate users, added secure user authentication. Was inactive for 9 days fsr, regrets it deeply. Grinding hard now.
+[n3rdium](https://github.com/n3rdium): Figured out how to authenticate users, added secure user authentication. Was inactive for 9 days fsr, regrets it deeply. Grinding hard now. Also made an owl mascot for the app.
