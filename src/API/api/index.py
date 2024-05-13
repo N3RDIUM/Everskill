@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, render_template
 from firebase_admin import initialize_app, firestore, credentials
 
 # DEV MODE
-dev = False
+dev = True
 
 # Initialization stuff
 app = Flask(__name__)
@@ -15,17 +15,6 @@ firebase = initialize_app(cred)
 db = firestore.client()
 
 # Routing
-@app.route("/")
-def index():
-    return jsonify({
-        "response": "Everskill API is up!",
-        "success": True
-    })
-    
-@app.route('/subscribe-push')
-def subscribe_push():
-    return render_template('subscribe.html')
-
 # TODO! Make functions for repetitive tasks!!
 @app.route('/new-user', methods=['POST'])
 def new_user():
@@ -36,25 +25,25 @@ def new_user():
         return jsonify({
             "response": "ERROR: Username not provided.",
             "success": False
-        })
-    if 'password-hash' not in options:
+        }), 400
+    if 'password' not in options:
         return jsonify({
             "response": "ERROR: Password hash not provided!",
             "success": False
-        })
+        }), 400
     
     # Validate username, check if it exists already
     if db.collection('users').document(options['username']).get().exists:
         return jsonify({
             "response": "ERROR: Username already taken.",
             "success": False
-        })
+        }), 400
         
     # Create a new auth token and add it to the creds database
     token = str(uuid.uuid4())
     db.collection('creds').document(options['username']).set({
         "token": token,
-        "password-hash": options['password-hash']
+        "password-hash": options['password']
     })
     
     # Create user document
@@ -71,7 +60,7 @@ def new_user():
     return jsonify({
         "success": True,
         "token": token
-    })
+    }), 200
     
 @app.route('/signin-upass', methods=['POST'])
 def sign_in():
@@ -82,20 +71,20 @@ def sign_in():
         return jsonify({
             "response": "ERROR: Username not provided!",
             "success": False
-        })
-    if 'password-hash' not in options:
+        }), 400
+    if 'password' not in options:
         return jsonify({
             "response": "ERROR: Password hash not provided!",
             "success": False
-        })
+        }), 400
         
     # Validate whether the password hash is right
     actual = db.collection('creds').document(options['username']).get().to_dict()['password-hash']
-    if actual != options['password-hash']:
+    if actual != options['password']:
         return jsonify({
             "response": "ERROR: Incorrect password!",
             "success": False
-        })
+        }), 400
     
     # Create an auth token for this user
     token = str(uuid.uuid4())
@@ -107,7 +96,7 @@ def sign_in():
     return jsonify({
         "success": True,
         "token": token
-    })
+    }), 200
 
 @app.route('/get-user', methods=['POST'])
 def get_user():
@@ -118,19 +107,19 @@ def get_user():
         return jsonify({
             "response": "ERROR: Username not provided.",
             "success": False
-        })
+        }), 400
         
     # Validate username, error if it doesn't exist
     if not db.collection('users').document(options['username']).get().exists:
         return jsonify({
             "response": "ERROR: Username does not exist.",
             "success": False
-        })
+        }), 400
     
     return jsonify({
         "response": db.collection('users').document(options['username']).get().to_dict(),
         "success": True
-    })
+    }), 200
     
 @app.route('/subscribe-pushnotify', methods=['POST'])
 def sub_push():
@@ -141,16 +130,16 @@ def sub_push():
         return jsonify({
             "response": "ERROR: Username not provided.",
             "success": False
-        })
+        }), 400
     if 'token' not in options:
         return jsonify({
             "response": "ERROR: Auth token not provided.",
             "success": False
-        })
+        }), 400
     if 'subscription' not in options:
         return jsonify({
             "response": "ERROR: Username not provided.",
-            "success": False
+            "s, 400uccess": False
         })
         
     # Validate auth token
@@ -158,14 +147,14 @@ def sub_push():
     if token != options['auth']:
         return jsonify({
             "response": "ERROR: Invalid auth token.",
-        })
+        }), 400
         
     # Validate username, error if it doesn't exist
     if not db.collection('users').document(options['username']).get().exists:
         return jsonify({
             "response": "ERROR: Username does not exist.",
             "success": False
-        })
+        }), 400
         
     # Add subscription to user
     db.collection('users').document(options['username']).update({
@@ -184,7 +173,7 @@ def sub_push():
     
     return jsonify({
         "success": True
-    })
+    }), 200
     
 @app.route('/subscribe-course', methods=['POST'])
 def sub_course():
@@ -195,38 +184,38 @@ def sub_course():
         return jsonify({
             "response": "ERROR: Username not provided.",
             "success": False
-        })
+        }), 400
     if 'token' not in options:
         return jsonify({
             "response": "ERROR: Auth token not provided.",
             "success": False
-        })
+        }), 400
     if 'course_id' not in options:
         return jsonify({
             "response": "ERROR: Course ID not provided.",
             "success": False
-        })
+        }), 400
         
     # Validate auth token
     token = db.collection('users').document(options['username']).get()['token']
     if token != options['token']:
         return jsonify({
             "response": "ERROR: Invalid auth token.",
-        })
+        }), 400
         
     # Validate username, error if it doesn't exist
     if not db.collection('users').document(options['username']).get().exists:
         return jsonify({
             "response": "ERROR: Username does not exist.",
             "success": False
-        })
+        }), 400
         
     # Validate course id, error if it doesn't exist
     if not db.collection('courses').document(options['course_id']).get().exists:
         return jsonify({
             "response": "ERROR: Course ID is invalid.",
             "success": False
-        })
+        }), 400
         
     # Add the course ID to the user's list of courses
     courses = db.collection('users').document(options['username']).get().to_dict()['courses']
@@ -249,7 +238,7 @@ def sub_course():
     
     return jsonify({
         "success": True
-    })
+    }), 200
 
 @app.route('/unsubscribe-course', methods=['POST'])
 def unsub_course():
@@ -260,38 +249,38 @@ def unsub_course():
         return jsonify({
             "response": "ERROR: Username not provided.",
             "success": False
-        })
+        }), 400
     if 'token' not in options:
         return jsonify({
             "response": "ERROR: Auth token not provided.",
             "success": False
-        })
+        }), 400
     if 'course_id' not in options:
         return jsonify({
             "response": "ERROR: Course ID not provided.",
             "success": False
-        })
+        }), 400
         
     # Validate auth token
     token = db.collection('users').document(options['username']).get()['token']
     if token != options['token']:
         return jsonify({
             "response": "ERROR: Invalid auth token.",
-        })
+        }), 400
         
     # Validate username, error if it doesn't exist
     if not db.collection('users').document(options['username']).get().exists:
         return jsonify({
             "response": "ERROR: Username does not exist.",
             "success": False
-        })
+        }), 400
         
     # Validate course id, error if it doesn't exist
     if not db.collection('courses').document(options['course_id']).get().exists:
         return jsonify({
             "response": "ERROR: Course ID is invalid.",
             "success": False
-        })
+        }), 400
         
     # Validate that the user has subscribed to this course
     courses = db.collection('users').document(options['username']).get().to_dict()['courses']
@@ -299,7 +288,7 @@ def unsub_course():
         return jsonify({
             "response": "ERROR: The user is not subscribed to this course.",
             "success": False
-        })
+        }), 400
         
     # Remove the course ID from the user's list of courses
     db.collection('users').document(options['username']).update({
@@ -321,7 +310,20 @@ def unsub_course():
     
     return jsonify({
         "success": True
-    })
+    }), 200
+
+# Templates routing
+@app.route("/")
+def index():
+    return render_template('index.html')
+
+@app.route("/signup")
+def signup():
+    return render_template('signup.html')
+
+@app.route('/subscribe-push')
+def subscribe_push():
+    return render_template('subscribe.html')
 
 # Driver
 if __name__ == "__main__":
