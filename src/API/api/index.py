@@ -165,7 +165,7 @@ def sub_push():
         json.loads(str(db.collection('creds').document(options['username']).get().to_dict()['webpush'])),
         json.dumps({
             "body": 'Welcome aboard! You have successfully subscribed to push notifications.',
-            "icon": '../static/icons/owl.svg',
+            "icon": '../icons/owl.svg',
             "title": 'Everskill Notification'
         }),
         vapid_private_key=vapid_private_key,
@@ -231,7 +231,7 @@ def sub_course():
             json.loads(str(db.collection('creds').document(options['username']).get().to_dict()['webpush'])),
             json.dumps({
                 "body": f"Welcome aboard! You have successfully subscribed to the course: {course_title}",
-                "icon": '../static/icons/owl.svg',
+                "icon": '../icons/owl.svg',
                 "title": 'Everskill Notification'
             }),
             vapid_private_key=vapid_private_key,
@@ -304,7 +304,7 @@ def unsub_course():
             json.loads(str(db.collection('creds').document(options['username']).get().to_dict()['webpush'])),
             json.dumps({
                 "body": f"Sorry to see you go! You have successfully unsubscribed from the course: {course_title}",
-                "icon": '../static/icons/owl.svg',
+                "icon": '../icons/owl.svg',
                 "title": 'Everskill Notification'
             }),
             vapid_private_key=vapid_private_key,
