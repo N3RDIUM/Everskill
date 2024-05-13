@@ -1,6 +1,13 @@
 // SHA256 hashing algo
 var sha256 =  new Hashes.SHA256;
 
+// If there is already everskill-token and everskill-username in the local storage
+if (localStorage.getItem("everskill-token") && localStorage.getItem("everskill-username")) {
+    alert("You're already signed in!");
+    window.location.href = '/';
+}
+
+// Submit button clicked.
 function submit() {
     let username = document.getElementById('username').value;
     let password = sha256.hex(document.getElementById('username').value);
