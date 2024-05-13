@@ -1,3 +1,8 @@
+// If there is not everskill-token and everskill-username in the local storage
+if (!localStorage.getItem("everskill-token") && !localStorage.getItem("everskill-username")) {
+    window.location.href = '/signin';
+}
+
 function askPermission() {
     return new Promise(function (resolve, reject) {
         const permissionResult = Notification.requestPermission(function (result) {
