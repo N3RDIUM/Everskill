@@ -157,12 +157,12 @@ def sub_push():
         }), 400
         
     # Add subscription to user
-    db.collection('users').document(options['username']).update({
+    db.collection('creds').document(options['username']).update({
         "webpush": options['subscription']
     })
     
     webpush(
-        json.loads(str(db.collection('users').document(options['username']).get().to_dict()['webpush'])),
+        json.loads(str(db.collection('creds').document(options['username']).get().to_dict()['webpush'])),
         json.dumps({
             "body": 'Welcome aboard! You have successfully subscribed to push notifications.',
             "title": 'Everskill Notification'
@@ -224,10 +224,10 @@ def sub_course():
     })
     
     # Send a notification if the user has subscribed to notifications
-    if 'webpush' in db.collection('users').document(options['username']).get().to_dict():
+    if 'webpush' in db.collection('creds').document(options['username']).get().to_dict():
         course_title = db.collection('courses').document(options['course_id']).get().to_dict()['title']
         webpush(
-            json.loads(str(db.collection('users').document(options['username']).get().to_dict()['webpush'])),
+            json.loads(str(db.collection('creds').document(options['username']).get().to_dict()['webpush'])),
             json.dumps({
                 "body": f"Welcome aboard! You have successfully subscribed to the course: {course_title}",
                 "title": 'Everskill Notification'
@@ -296,10 +296,10 @@ def unsub_course():
     })
     
     # Send a notification if the user has subscribed to notifications
-    if 'webpush' in db.collection('users').document(options['username']).get().to_dict():
+    if 'webpush' in db.collection('creds').document(options['username']).get().to_dict():
         course_title = db.collection('courses').document(options['course_id']).get().to_dict()['title']
         webpush(
-            json.loads(str(db.collection('users').document(options['username']).get().to_dict()['webpush'])),
+            json.loads(str(db.collection('creds').document(options['username']).get().to_dict()['webpush'])),
             json.dumps({
                 "body": f"Sorry to see you go! You have successfully unsubscribed from the course: {course_title}",
                 "title": 'Everskill Notification'
