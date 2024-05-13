@@ -16,7 +16,7 @@ db = firestore.client()
 
 # Routing
 # TODO! Make functions for repetitive tasks!!
-@app.route('/new-user', methods=['POST'])
+@app.route('/new-user/', methods=['POST'])
 def new_user():
     options = request.get_json()
     
@@ -62,7 +62,7 @@ def new_user():
         "token": token
     }), 200
     
-@app.route('/signin-upass', methods=['POST'])
+@app.route('/signin-upass/', methods=['POST'])
 def sign_in():
     options = request.get_json()
     
@@ -98,7 +98,7 @@ def sign_in():
         "token": token
     }), 200
 
-@app.route('/get-user', methods=['POST'])
+@app.route('/get-user/', methods=['POST'])
 def get_user():
     options = request.get_json()
     
@@ -121,7 +121,7 @@ def get_user():
         "success": True
     }), 200
     
-@app.route('/subscribe-pushnotify', methods=['POST'])
+@app.route('/subscribe-pushnotify/', methods=['POST'])
 def sub_push():
     options = request.get_json()
     
@@ -175,7 +175,7 @@ def sub_push():
         "success": True
     }), 200
     
-@app.route('/subscribe-course', methods=['POST'])
+@app.route('/subscribe-course/', methods=['POST'])
 def sub_course():
     options = request.get_json()
     
@@ -240,7 +240,7 @@ def sub_course():
         "success": True
     }), 200
 
-@app.route('/unsubscribe-course', methods=['POST'])
+@app.route('/unsubscribe-course/', methods=['POST'])
 def unsub_course():
     options = request.get_json()
     
@@ -317,15 +317,15 @@ def unsub_course():
 def index():
     return render_template('index.html')
 
-@app.route("/signup")
+@app.route("/signup/")
 def signup():
     return render_template('signup.html')
 
-@app.route("/signin")
+@app.route("/signin/")
 def signin():
     return render_template('signin.html')
 
-@app.route('/subscribe')
+@app.route('/subscribe/')
 def subscribe():
     return render_template('subscribe.html')
 
