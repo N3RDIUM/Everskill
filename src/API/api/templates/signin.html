@@ -4,18 +4,17 @@
         <!--Metadata-->
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Everskill - Home</title>
+        <title>Everskill - Sign In</title>
 
         <!--Libs-->
         <script src="../static/js/hashes.js"></script>
 
         <!--Scripts-->
-        <script src="../static/js/index.js"></script>
-        <script src="../static/js/signout.js"></script>
+        <script src="../static/js/signin.js"></script>
     </head>
     <body>
-        Everskill home
-        <button onclick="signout()">Sign out</button><br>
-        <div id="username-thing"></div>
+        <input type="text" id="username">
+        <input type="password" id="password">
+        <button onclick="submit()">Submit</button>
     </body>
 </html>

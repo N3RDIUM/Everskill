@@ -143,8 +143,8 @@ def sub_push():
         })
         
     # Validate auth token
-    token = db.collection('users').document(options['username']).get()['token']
-    if token != options['auth']:
+    token = db.collection('creds').document(options['username']).get().to_dict()['token']
+    if token != options['token']:
         return jsonify({
             "response": "ERROR: Invalid auth token.",
         }), 400
@@ -197,7 +197,7 @@ def sub_course():
         }), 400
         
     # Validate auth token
-    token = db.collection('users').document(options['username']).get()['token']
+    token = db.collection('users').document(options['username']).get().to_dict()['token']
     if token != options['token']:
         return jsonify({
             "response": "ERROR: Invalid auth token.",
@@ -262,7 +262,7 @@ def unsub_course():
         }), 400
         
     # Validate auth token
-    token = db.collection('users').document(options['username']).get()['token']
+    token = db.collection('users').document(options['username']).get().to_dict()['token']
     if token != options['token']:
         return jsonify({
             "response": "ERROR: Invalid auth token.",
@@ -321,8 +321,12 @@ def index():
 def signup():
     return render_template('signup.html')
 
-@app.route('/subscribe-push')
-def subscribe_push():
+@app.route("/signin")
+def signin():
+    return render_template('signin.html')
+
+@app.route('/subscribe')
+def subscribe():
     return render_template('subscribe.html')
 
 # Driver
