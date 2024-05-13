@@ -1,5 +1,5 @@
 # Imports
-import os, json
+import os, json, uuid
 from pywebpush import webpush
 from flask import Flask, request, jsonify, render_template
 from firebase_admin import initialize_app, firestore, credentials
@@ -26,7 +26,7 @@ def index():
 def subscribe_push():
     return render_template('subscribe.html')
 
-# TODO! Check for an auth token in POST routes
+# TODO! Make functions for repetitive tasks!!
 @app.route('/new-user', methods=['POST'])
 def new_user():
     options = request.get_json()
@@ -37,6 +37,11 @@ def new_user():
             "response": "ERROR: Username not provided.",
             "success": False
         })
+    if 'password-hash' not in options:
+        return jsonify({
+            "response": "ERROR: Password hash not provided!",
+            "success": False
+        })
     
     # Validate username, check if it exists already
     if db.collection('users').document(options['username']).get().exists:
@@ -45,6 +50,13 @@ def new_user():
             "success": False
         })
         
+    # Create a new auth token and add it to the creds database
+    token = str(uuid.uuid4())
+    db.collection('creds').document(options['username']).set({
+        "token": token,
+        "password-hash": options['password-hash']
+    })
+    
     # Create user document
     db.collection('users').document(options['username']).set({
         "coins": 100,
@@ -57,9 +69,46 @@ def new_user():
     })
     
     return jsonify({
-        "success": True
+        "success": True,
+        "token": token
     })
     
+@app.route('/signin-upass', methods=['POST'])
+def sign_in():
+    options = request.get_json()
+    
+    # Check request
+    if 'username' not in options:
+        return jsonify({
+            "response": "ERROR: Username not provided!",
+            "success": False
+        })
+    if 'password-hash' not in options:
+        return jsonify({
+            "response": "ERROR: Password hash not provided!",
+            "success": False
+        })
+        
+    # Validate whether the password hash is right
+    actual = db.collection('creds').document(options['username']).get().to_dict()['password-hash']
+    if actual != options['password-hash']:
+        return jsonify({
+            "response": "ERROR: Incorrect password!",
+            "success": False
+        })
+    
+    # Create an auth token for this user
+    token = str(uuid.uuid4())
+    db.collection('creds').document(options['username']).update({
+        "token": token
+    })
+    
+    # Return the auth token
+    return jsonify({
+        "success": True,
+        "token": token
+    })
+
 @app.route('/get-user', methods=['POST'])
 def get_user():
     options = request.get_json()
@@ -93,11 +142,22 @@ def sub_push():
             "response": "ERROR: Username not provided.",
             "success": False
         })
-        
+    if 'token' not in options:
+        return jsonify({
+            "response": "ERROR: Auth token not provided.",
+            "success": False
+        })
     if 'subscription' not in options:
         return jsonify({
             "response": "ERROR: Username not provided.",
             "success": False
+        })
+        
+    # Validate auth token
+    token = db.collection('users').document(options['username']).get()['token']
+    if token != options['auth']:
+        return jsonify({
+            "response": "ERROR: Invalid auth token.",
         })
         
     # Validate username, error if it doesn't exist
@@ -136,11 +196,22 @@ def sub_course():
             "response": "ERROR: Username not provided.",
             "success": False
         })
-        
+    if 'token' not in options:
+        return jsonify({
+            "response": "ERROR: Auth token not provided.",
+            "success": False
+        })
     if 'course_id' not in options:
         return jsonify({
             "response": "ERROR: Course ID not provided.",
             "success": False
+        })
+        
+    # Validate auth token
+    token = db.collection('users').document(options['username']).get()['token']
+    if token != options['token']:
+        return jsonify({
+            "response": "ERROR: Invalid auth token.",
         })
         
     # Validate username, error if it doesn't exist
@@ -162,7 +233,6 @@ def sub_course():
     db.collection('users').document(options['username']).update({
         "courses": courses + [options['course_id']]
     })
-    
     
     # Send a notification if the user has subscribed to notifications
     if 'webpush' in db.collection('users').document(options['username']).get().to_dict():
@@ -191,11 +261,22 @@ def unsub_course():
             "response": "ERROR: Username not provided.",
             "success": False
         })
-        
+    if 'token' not in options:
+        return jsonify({
+            "response": "ERROR: Auth token not provided.",
+            "success": False
+        })
     if 'course_id' not in options:
         return jsonify({
             "response": "ERROR: Course ID not provided.",
             "success": False
+        })
+        
+    # Validate auth token
+    token = db.collection('users').document(options['username']).get()['token']
+    if token != options['token']:
+        return jsonify({
+            "response": "ERROR: Invalid auth token.",
         })
         
     # Validate username, error if it doesn't exist
