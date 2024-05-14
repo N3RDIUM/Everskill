@@ -1,5 +1,6 @@
 Flask
 bleach
+requests
 pywebpush
 html_sanitizer
 firebase-admin

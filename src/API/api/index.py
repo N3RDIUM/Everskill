@@ -1,5 +1,6 @@
 # Imports
 import os, json, uuid
+from course import Course
 from pywebpush import webpush
 from flask import Flask, request, jsonify, render_template
 from firebase_admin import initialize_app, firestore, credentials
@@ -54,7 +55,8 @@ def new_user():
         "achievements": [],
         "patches": [],
         "profilepic": '',
-        'courses': []
+        'courses': [],
+        "interests": []
     })
     
     return jsonify({
@@ -314,6 +316,72 @@ def unsub_course():
     return jsonify({
         "success": True
     }), 200
+    
+@app.route('/course-get/')
+def course():
+    # Validate request
+    options = request.get_json()
+    
+    # Check request
+    if 'course_id' not in options:
+        return jsonify({
+            "response": "ERROR: Course ID not provided.",
+            "success": False
+        }), 400
+    
+    # Validate course existence
+    if not db.collection('courses').document(options["course_id"]).get().exists:
+        return jsonify({
+            "response": "ERROR: Course ID is invalid.",
+            "success": False
+        }), 400
+    
+    # Fetch course metadata
+    course_meta = db.collection('courses').document(options["course_id"]).get().to_dict()['metadata']
+    course = Course(course_meta)
+    details = course.details
+    
+    # Return it
+    return jsonify({
+        "success": True,
+        "details": details
+    })
+    
+@app.route('/course-render/')
+def course_render():
+    # Validate request
+    options = request.get_json()
+    
+    # Check request
+    if 'course_id' not in options:
+        return jsonify({
+            "response": "ERROR: Course ID not provided.",
+            "success": False
+        }), 400
+    if 'page' not in options:
+        return jsonify({
+            "response": "ERROR: Page ID not provided.",
+            "success": False
+        }), 400
+    
+    # Validate course existence
+    if not db.collection('courses').document(options["course_id"]).get().exists:
+        return jsonify({
+            "response": "ERROR: Course ID is invalid.",
+            "success": False
+        }), 400
+    
+    # Fetch course metadata
+    course_meta = db.collection('courses').document(options["course_id"]).get().to_dict()['metadata']
+    course = Course(course_meta)
+    details = course.details
+    
+    # Return it
+    return jsonify({
+        "success": True,
+        "details": details,
+        "render": course.render(options["page"])
+    })
 
 # Templates routing
 @app.route("/")
