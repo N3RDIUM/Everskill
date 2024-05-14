@@ -17,4 +17,4 @@
 [n3rdium](https://github.com/n3rdium): Figured out how to authenticate users, added secure user authentication. Was inactive for 9 days fsr, regrets it deeply. Grinding hard now. Also made an owl mascot for the app.
 
 # 13/05/2024
-[n3rdium](https://github.com/n3rdium): Added a [course template](https://github.com/N3RDIUM/everskill-course-template) and started building the course renderer.
+[n3rdium](https://github.com/n3rdium): Added a [course template](https://github.com/N3RDIUM/everskill-course-template) and started building the course renderer. Also created a quiz renderer.
