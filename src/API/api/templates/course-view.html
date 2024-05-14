@@ -48,8 +48,10 @@
                 }
             }
 
-            function processQuestion(el, data) {
+            function processQuestion(el, data, prev="") {
                 const currentQuestion = parseInt(el.getAttribute('data-current-question'));
+                el.innerHTML = prev;
+
                 if(currentQuestion > data['questions'].length - 1) {
                     // We are done with this quiz
                     el.innerHTML = 'You have completed this quiz!'
@@ -57,6 +59,11 @@
                 }
                 const questionData = data['questions'][currentQuestion];
                 
+                // Set the title text
+                const title = document.createElement('p');
+                title.innerText = data['title'];
+                el.appendChild(title);
+
                 // Set the question text
                 const question = document.createElement('p');
                 question.innerText = questionData['q'];
@@ -93,16 +100,19 @@
                             })
                         }).then(async res => {
                             const check = await res.json();
+                            var prev = "";
                             if(check.check) {
                                 option.classList.add('correct');
+                                prev = "Correct!";
                             } else {
-                                option.classList.add('correct');
+                                option.classList.add('wrong');
+                                prev = "Wrong!";
                             }
 
                             // Move to the next question
                             const nextQuestion = parseInt(el.getAttribute('data-current-question')) + 1;
                             el.setAttribute('data-current-question', nextQuestion);
-                            processQuestion(el, data);
+                            processQuestion(el, data, prev);
                         })
                     }
 
