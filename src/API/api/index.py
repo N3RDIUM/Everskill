@@ -347,7 +347,7 @@ def course():
         "details": details
     })
     
-@app.route('/course-render/')
+@app.route('/course-render/', methods=['POST'])
 def course_render():
     # Validate request
     options = request.get_json()
@@ -359,10 +359,11 @@ def course_render():
             "success": False
         }), 400
     if 'page' not in options:
-        return jsonify({
-            "response": "ERROR: Page ID not provided.",
-            "success": False
-        }), 400
+        # return jsonify({
+        #     "response": "ERROR: Page ID not provided.",
+        #     "success": False
+        # }), 400
+        options['page'] = 'home'
     
     # Validate course existence
     if not db.collection('courses').document(options["course_id"]).get().exists:
@@ -399,6 +400,20 @@ def signin():
 @app.route('/subscribe/')
 def subscribe():
     return render_template('subscribe.html')
+
+@app.route('/course-view/<string:course_id>/')
+def view_course(course_id):
+    # Get course details
+    if not db.collection('courses').document(course_id).get().exists:
+        return jsonify({
+            "response": "ERROR: Course ID is invalid.",
+            "success": False
+        }), 400
+    
+    return render_template(
+        "course-view.html",
+        course_id=course_id
+    )
 
 # Driver
 if __name__ == "__main__":

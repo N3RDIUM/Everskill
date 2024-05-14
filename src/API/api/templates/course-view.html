@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!--Metadata-->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="/static/icons/owl.svg">
+        <title>Everskill - Course View</title>
+
+        <!--Libs-->
+        <script src="/static/js/hashes.js"></script>
+
+        <!--Scripts-->
+        <script>
+            fetch('/course-render/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    course_id: "{{ course_id }}"
+                })
+            }).then(async res => {
+                const data = await res.json();
+                document.getElementById('_content').innerHTML = data.render[1];
+            })
+        </script>
+    </head>
+    <body>
+        <div class="course-content" id="_content"></div>
+    </body>
+</html>

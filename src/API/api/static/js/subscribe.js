@@ -38,7 +38,7 @@ function urlBase64ToUint8Array(base64String) {
 
 function subscribeUser() {
     return navigator.serviceWorker
-        .register('../static/js/service-worker.js')
+        .register('/static/js/service-worker.js')
         .then(function (registration) {
             const subscribeOptions = {
                 userVisibleOnly: true,
