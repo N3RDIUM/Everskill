@@ -14,7 +14,7 @@ See the project log [here](project-log.md)!
 - [x] Get things sorted (assignees: [n3rdium](https://github.com/n3rdium))
 - [x] Write a basic backend (assignees: [n3rdium](https://github.com/n3rdium))
 - [ ] Start working on the basic code for the course items: (assignees: [chet](https://github.com/chet-ag09))
-- [ ] Backend: Plan system design for course integration (assignees: [n3rdium](https://github.com/n3rdium))
+- [x] Backend: Plan system design for course integration (assignees: [n3rdium](https://github.com/n3rdium))
 - [ ] Make anticheat! (assignees: [n3rdium](https://github.com/n3rdium) [!WANTED: SOMEONE INTO FRONTEND])
 
 # Motivation
