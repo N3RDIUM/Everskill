@@ -7,11 +7,9 @@
         <link rel="icon" type="image/x-icon" href="/static/icons/owl.svg">
         <title>Everskill - Course View</title>
 
-        <!--Libs-->
-        <script src="/static/js/hashes.js"></script>
-
         <!--Scripts-->
         <script>
+            // TODO! HANDLE ERRORS FROM THE SERVER
             fetch('/course-render/', {
                 method: 'POST',
                 headers: {
@@ -23,7 +21,95 @@
             }).then(async res => {
                 const data = await res.json();
                 document.getElementById('_content').innerHTML = data.render[1];
+
+                // Process all interactive content
+                processQuizzes();
             })
+
+            function processQuizzes() {
+                const quizElements = document.getElementsByClassName("quiz");
+                for (let i = 0; i < quizElements.length; ++i) {
+                    const quizElement = quizElements[i];
+                    const quizId = quizElement.getAttribute("data-quizid");
+                    fetch('/quiz-get/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            course_id: "{{ course_id }}",
+                            quiz_id: quizId,
+                        })
+                    }).then(async res => {
+                        const data = await res.json();
+                        quizElement.setAttribute('data-current-question', 0);
+                        processQuestion(quizElement, data.quiz);
+                    })
+                }
+            }
+
+            function processQuestion(el, data) {
+                const currentQuestion = parseInt(el.getAttribute('data-current-question'));
+                if(currentQuestion > data['questions'].length - 1) {
+                    // We are done with this quiz
+                    el.innerHTML = 'You have completed this quiz!'
+                    return null;
+                }
+                const questionData = data['questions'][currentQuestion];
+                
+                // Set the question text
+                const question = document.createElement('p');
+                question.innerText = questionData['q'];
+                el.appendChild(question);
+
+                // Add all the options
+                for (let i = 0; i < questionData['a'].length; ++i) {
+                    const option = document.createElement('button');
+                    option.classList.add('quiz-option');
+                    option.innerText = questionData['a'][i];
+                    el.appendChild(option);
+
+                    // Create the callback
+                    const callback = () => {
+                        // Disable all the other buttons
+                        const options = el.querySelectorAll('.quiz-option');
+                        for (let j = 0; j < options.length; ++j) {
+                            options[j].disabled = true;
+                            options[j].style.cursor = 'default';
+                            options[j].onclick = null;
+                        }
+                        
+                        // Validate options
+                        fetch('/quiz-check/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                course_id: "{{ course_id }}",
+                                quiz_id: el.getAttribute("data-quizid"),
+                                question_index: el.getAttribute('data-current-question'),
+                                answer_index: i,
+                            })
+                        }).then(async res => {
+                            const check = await res.json();
+                            if(check.check) {
+                                option.classList.add('correct');
+                            } else {
+                                option.classList.add('correct');
+                            }
+
+                            // Move to the next question
+                            const nextQuestion = parseInt(el.getAttribute('data-current-question')) + 1;
+                            el.setAttribute('data-current-question', nextQuestion);
+                            processQuestion(el, data);
+                        })
+                    }
+
+                    // Assign the callback
+                    option.onclick = callback;
+                }
+            }
         </script>
     </head>
     <body>

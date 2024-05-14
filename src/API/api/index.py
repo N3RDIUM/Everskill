@@ -10,6 +10,8 @@ class Course:
     def __init__(self, url: str) -> None:
         self.url = url
         self.details = json.loads(requests.get(self.url).text)
+        self.quizzes = json.loads(requests.get(self.details["quizzes"]).text)
+        self.achievements = json.loads(requests.get(self.details["achievements"]).text)
 
     def render(self, page: str = 'home') -> list:
         page = self.details['pages'][page]
@@ -17,9 +19,20 @@ class Course:
         ret = bleach.linkify(source)
         
         return page, ret
+    
+    def get_quiz(self, id) -> dict:
+        ret = self.quizzes[id]
+        
+        for i in range(len(ret['questions'])):
+            ret['questions'][i]['answers'] = 'no cheating!!'
+        
+        return ret
+        
+    def verify_answer(self, qid, idx, ans) -> bool:
+        return self.quizzes[qid]['questions'][int(idx)]['answer'] == ans
 
 # DEV MODE
-dev = False
+dev = True
 
 # Initialization stuff
 app = Flask(__name__)
@@ -330,36 +343,6 @@ def unsub_course():
         "success": True
     }), 200
     
-@app.route('/course-get/')
-def course():
-    # Validate request
-    options = request.get_json()
-    
-    # Check request
-    if 'course_id' not in options:
-        return jsonify({
-            "response": "ERROR: Course ID not provided.",
-            "success": False
-        }), 400
-    
-    # Validate course existence
-    if not db.collection('courses').document(options["course_id"]).get().exists:
-        return jsonify({
-            "response": "ERROR: Course ID is invalid.",
-            "success": False
-        }), 400
-    
-    # Fetch course metadata
-    course_meta = db.collection('courses').document(options["course_id"]).get().to_dict()['metadata']
-    course = Course(course_meta)
-    details = course.details
-    
-    # Return it
-    return jsonify({
-        "success": True,
-        "details": details
-    })
-    
 @app.route('/course-render/', methods=['POST'])
 def course_render():
     # Validate request
@@ -395,6 +378,86 @@ def course_render():
         "success": True,
         "details": details,
         "render": course.render(options["page"])
+    })
+    
+@app.route('/quiz-get/', methods=['POST'])
+def get_quiz():
+    # Validate request
+    options = request.get_json()
+    
+    # Check request
+    if 'course_id' not in options:
+        return jsonify({
+            "response": "ERROR: Course ID not provided.",
+            "success": False
+        }), 400
+    if 'quiz_id' not in options:
+        return jsonify({
+            "response": "ERROR: Quiz ID not provided.",
+            "success": False
+        }), 400
+        
+    # Validate course existence
+    if not db.collection('courses').document(options["course_id"]).get().exists:
+        return jsonify({
+            "response": "ERROR: Course ID is invalid.",
+            "success": False
+        }), 400
+        
+    # Fetch course metadata
+    course_meta = db.collection('courses').document(options["course_id"]).get().to_dict()['metadata']
+    course = Course(course_meta)
+    quiz = course.get_quiz(options["quiz_id"])
+    
+    # Return it
+    return jsonify({
+        "success": True,
+        "quiz": quiz
+    })
+    
+@app.route('/quiz-check/', methods=['POST'])
+def check_answer():
+    # Validate request
+    options = request.get_json()
+    
+    # Check request
+    if 'course_id' not in options:
+        return jsonify({
+            "response": "ERROR: Course ID not provided.",
+            "success": False
+        }), 400
+    if 'quiz_id' not in options:
+        return jsonify({
+            "response": "ERROR: Quiz ID not provided.",
+            "success": False
+        }), 400
+    if 'question_index' not in options:
+        return jsonify({
+            "response": "ERROR: Question index not provided.",
+            "success": False
+        }), 400
+    if 'answer_index' not in options:
+        return jsonify({
+            "response": "ERROR: Answer index not provided.",
+            "success": False
+        }), 400
+        
+    # Validate course existence
+    if not db.collection('courses').document(options["course_id"]).get().exists:
+        return jsonify({
+            "response": "ERROR: Course ID is invalid.",
+            "success": False
+        }), 400
+        
+    # Fetch course metadata
+    course_meta = db.collection('courses').document(options["course_id"]).get().to_dict()['metadata']
+    course = Course(course_meta)
+    correct = course.verify_answer(options['quiz_id'], options['question_index'], options['answer_index'])
+    
+    # Return it
+    return jsonify({
+        "success": True,
+        "check": correct
     })
 
 # Templates routing
