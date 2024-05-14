@@ -30,6 +30,9 @@ class Course:
         
     def verify_answer(self, qid, idx, ans) -> bool:
         return self.quizzes[qid]['questions'][int(idx)]['answer'] == ans
+    
+    def coins(self, qid, idx) -> int:
+        return int(self.quizzes[qid]['questions'][int(idx)]['coins'])
 
 # DEV MODE
 dev = True
@@ -226,7 +229,7 @@ def sub_course():
         }), 400
         
     # Validate auth token
-    token = db.collection('users').document(options['username']).get().to_dict()['token']
+    token = db.collection('creds').document(options['username']).get().to_dict()['token']
     if token != options['token']:
         return jsonify({
             "response": "ERROR: Invalid auth token.",
@@ -292,7 +295,7 @@ def unsub_course():
         }), 400
         
     # Validate auth token
-    token = db.collection('users').document(options['username']).get().to_dict()['token']
+    token = db.collection('creds').document(options['username']).get().to_dict()['token']
     if token != options['token']:
         return jsonify({
             "response": "ERROR: Invalid auth token.",
@@ -441,6 +444,16 @@ def check_answer():
             "response": "ERROR: Answer index not provided.",
             "success": False
         }), 400
+    if 'username' not in options:
+        return jsonify({
+            "response": "ERROR: Username not provided.",
+            "success": False
+        }), 400
+    if 'token' not in options:
+        return jsonify({
+            "response": "ERROR: Auth token not provided.",
+            "success": False
+        }), 400
         
     # Validate course existence
     if not db.collection('courses').document(options["course_id"]).get().exists:
@@ -449,10 +462,24 @@ def check_answer():
             "success": False
         }), 400
         
+    # Validate auth token
+    token = db.collection('creds').document(options['username']).get().to_dict()['token']
+    if token != options['token']:
+        return jsonify({
+            "response": "ERROR: Invalid auth token.",
+        }), 400
+        
     # Fetch course metadata
     course_meta = db.collection('courses').document(options["course_id"]).get().to_dict()['metadata']
     course = Course(course_meta)
+    coins = course.coins(options['quiz_id'], options['question_index'])
     correct = course.verify_answer(options['quiz_id'], options['question_index'], options['answer_index'])
+    
+    # Add coins to the user profile if the answer is correct
+    if correct:
+        db.collection('users').document(options['username']).update({
+            "coins": int(db.collection('users').document(options['username']).get().to_dict()['coins']) + coins
+        })
     
     # Return it
     return jsonify({

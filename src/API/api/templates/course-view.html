@@ -9,6 +9,15 @@
 
         <!--Scripts-->
         <script>
+            // If there is not everskill-token and everskill-username in the local storage
+            if (!localStorage.getItem("everskill-token") && !localStorage.getItem("everskill-username")) {
+                window.location.href = '/signin';
+            }
+
+            // Get username and token from local storage
+            let username = localStorage.getItem('everskill-username');
+            let token = localStorage.getItem('everskill-token');
+
             // TODO! HANDLE ERRORS FROM THE SERVER
             fetch('/course-render/', {
                 method: 'POST',
@@ -97,6 +106,8 @@
                                 quiz_id: el.getAttribute("data-quizid"),
                                 question_index: el.getAttribute('data-current-question'),
                                 answer_index: i,
+                                username: username,
+                                token: token
                             })
                         }).then(async res => {
                             const check = await res.json();
