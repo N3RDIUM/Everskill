@@ -35,7 +35,7 @@ class Course:
         return int(self.quizzes[qid]['questions'][int(idx)]['coins'])
 
 # DEV MODE
-dev = True
+dev = False
 
 # Initialization stuff
 app = Flask(__name__)
