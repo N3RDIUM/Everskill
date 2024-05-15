@@ -63,7 +63,7 @@
 
                 if(currentQuestion > data['questions'].length - 1) {
                     // We are done with this quiz
-                    el.innerHTML = 'You have completed this quiz!'
+                    el.innerHTML = prev + ' You have completed this quiz.'
                     return null;
                 }
                 const questionData = data['questions'][currentQuestion];
