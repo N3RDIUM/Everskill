@@ -17,11 +17,11 @@ For more info, look at the [project log](./project-log.md).
 - [x] Get things sorted (assignees: [n3rdium](https://github.com/n3rdium))
 - [x] Write a basic backend (assignees: [n3rdium](https://github.com/n3rdium))
 - [x] Backend: Plan system design for course integration (assignees: [n3rdium](https://github.com/n3rdium))
+- [x] Fix backend bug: last question in a quiz not awarding points (assignees: [n3rdium](https://github.com/n3rdium))
 
 ## TODO
 - [ ] Start working on the basic code for the course items: (assignees: [chet](https://github.com/chet-ag09))
 - [ ] Make anticheat! (assignees: [n3rdium](https://github.com/n3rdium) [!WANTED: SOMEONE INTO FRONTEND])
-- [ ] Fix backend bug: last question in a quiz not awarding points (assignees: [n3rdium](https://github.com/n3rdium))
 
 # Motivation
 We were inspired to make this platform by the creator of Duolingo. For more details, you can watch his Ted talk (linked below)
