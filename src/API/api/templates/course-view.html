@@ -111,6 +111,7 @@
                             })
                         }).then(async res => {
                             const check = await res.json();
+                            console.log(check)
                             var prev = "";
                             if(check.check) {
                                 option.classList.add('correct');

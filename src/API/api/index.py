@@ -4,7 +4,17 @@ import os, json, uuid, bleach, requests
 from flask import Flask, request, jsonify, render_template
 from firebase_admin import initialize_app, firestore, credentials
 
-# Course class
+# DEV MODE
+dev = False
+
+# Initialization stuff
+app = Flask(__name__)
+cred = credentials.Certificate(json.loads(os.environ['FB_AUTH']))
+vapid_private_key = os.environ['VAPID_PRIVATE_KEY']
+firebase = initialize_app(cred)
+db = firestore.client()
+
+# Course class because why not
 # TODO! Use the html sanitizer!
 class Course:
     def __init__(self, url: str) -> None:
@@ -33,16 +43,6 @@ class Course:
     
     def coins(self, qid, idx) -> int:
         return int(self.quizzes[qid]['questions'][int(idx)]['coins'])
-
-# DEV MODE
-dev = False
-
-# Initialization stuff
-app = Flask(__name__)
-cred = credentials.Certificate(json.loads(os.environ['FB_AUTH']))
-vapid_private_key = os.environ['VAPID_PRIVATE_KEY']
-firebase = initialize_app(cred)
-db = firestore.client()
 
 # Routing
 # TODO! Make functions for repetitive tasks!!
@@ -117,11 +117,8 @@ def sign_in():
             "success": False
         }), 400
     
-    # Create an auth token for this user
-    token = str(uuid.uuid4())
-    db.collection('creds').document(options['username']).update({
-        "token": token
-    })
+    # Use existing auth token
+    token = db.collection('creds').document(options['username']).get().to_dict()['token']
     
     # Return the auth token
     return jsonify({
