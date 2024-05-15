@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, render_template
 from firebase_admin import initialize_app, firestore, credentials
 
 # DEV MODE
-dev = False
+dev = True
 
 # Initialization stuff
 app = Flask(__name__)
@@ -22,6 +22,12 @@ class Course:
         self.details = json.loads(requests.get(self.url).text)
         self.quizzes = json.loads(requests.get(self.details["quizzes"]).text)
         self.achievements = json.loads(requests.get(self.details["achievements"]).text)
+        
+        db.collection('course-metadata').document(str(hash(url))).set({
+            "details": self.details,
+            "quizzes": self.quizzes,
+            "achievements": self.achievements
+        })
 
     def render(self, page: str = 'home') -> list:
         page = self.details['pages'][page]
@@ -44,8 +50,31 @@ class Course:
     def coins(self, qid, idx) -> int:
         return int(self.quizzes[qid]['questions'][int(idx)]['coins'])
 
+# Functions
+def user_exists(username):
+    return db.collection('users').document(username).get().exists
+
+def new_token(username, password):
+    token = str(uuid.uuid4())
+    db.collection('creds').document(username).set({
+        "token": token,
+        "password-hash": password
+    })
+    return token
+
+def validate_password(username, password):
+    return db.collection('creds').document(username).get().to_dict()['password-hash'] == password
+
+def get_token(username):
+    return db.collection('creds').document(username).get().to_dict()['token']
+
+def validate_token(username, token):
+    return db.collection('creds').document(username).get().to_dict()['token'] == token
+
+def course_exists(course_id):
+    return db.collection('courses').document(course_id).get().exists
+
 # Routing
-# TODO! Make functions for repetitive tasks!!
 @app.route('/new-user/', methods=['POST'])
 def new_user():
     options = request.get_json()
@@ -63,18 +92,14 @@ def new_user():
         }), 400
     
     # Validate username, check if it exists already
-    if db.collection('users').document(options['username']).get().exists:
+    if user_exists(options['username']):
         return jsonify({
             "response": "ERROR: Username already taken.",
             "success": False
         }), 400
         
     # Create a new auth token and add it to the creds database
-    token = str(uuid.uuid4())
-    db.collection('creds').document(options['username']).set({
-        "token": token,
-        "password-hash": options['password']
-    })
+    token = new_token(options['username'], options['password'])
     
     # Create user document
     db.collection('users').document(options['username']).set({
@@ -110,15 +135,14 @@ def sign_in():
         }), 400
         
     # Validate whether the password hash is right
-    actual = db.collection('creds').document(options['username']).get().to_dict()['password-hash']
-    if actual != options['password']:
+    if not validate_password(options['username'], options['password']):
         return jsonify({
             "response": "ERROR: Incorrect password!",
             "success": False
         }), 400
     
     # Use existing auth token
-    token = db.collection('creds').document(options['username']).get().to_dict()['token']
+    token = get_token(options['username'])
     
     # Return the auth token
     return jsonify({
@@ -171,14 +195,13 @@ def sub_push():
         })
         
     # Validate auth token
-    token = db.collection('creds').document(options['username']).get().to_dict()['token']
-    if token != options['token']:
+    if not validate_token(options['username'], options['token']):
         return jsonify({
             "response": "ERROR: Invalid auth token.",
         }), 400
         
     # Validate username, error if it doesn't exist
-    if not db.collection('users').document(options['username']).get().exists:
+    if not user_exists(options['username']):
         return jsonify({
             "response": "ERROR: Username does not exist.",
             "success": False
@@ -226,21 +249,20 @@ def sub_course():
         }), 400
         
     # Validate auth token
-    token = db.collection('creds').document(options['username']).get().to_dict()['token']
-    if token != options['token']:
+    if not validate_token(options['username'], options['token']):
         return jsonify({
             "response": "ERROR: Invalid auth token.",
         }), 400
         
     # Validate username, error if it doesn't exist
-    if not db.collection('users').document(options['username']).get().exists:
+    if not user_exists(options['username']):
         return jsonify({
             "response": "ERROR: Username does not exist.",
             "success": False
         }), 400
         
     # Validate course id, error if it doesn't exist
-    if not db.collection('courses').document(options['course_id']).get().exists:
+    if not course_exists(options['course_id']):
         return jsonify({
             "response": "ERROR: Course ID is invalid.",
             "success": False
@@ -292,21 +314,20 @@ def unsub_course():
         }), 400
         
     # Validate auth token
-    token = db.collection('creds').document(options['username']).get().to_dict()['token']
-    if token != options['token']:
+    if not validate_token(options['username'], options['token']):
         return jsonify({
             "response": "ERROR: Invalid auth token.",
         }), 400
         
     # Validate username, error if it doesn't exist
-    if not db.collection('users').document(options['username']).get().exists:
+    if not user_exists(options['username']):
         return jsonify({
             "response": "ERROR: Username does not exist.",
             "success": False
         }), 400
         
     # Validate course id, error if it doesn't exist
-    if not db.collection('courses').document(options['course_id']).get().exists:
+    if not course_exists(options['course_id']):
         return jsonify({
             "response": "ERROR: Course ID is invalid.",
             "success": False
@@ -355,14 +376,10 @@ def course_render():
             "success": False
         }), 400
     if 'page' not in options:
-        # return jsonify({
-        #     "response": "ERROR: Page ID not provided.",
-        #     "success": False
-        # }), 400
         options['page'] = 'home'
     
     # Validate course existence
-    if not db.collection('courses').document(options["course_id"]).get().exists:
+    if not course_exists(options["course_id"]):
         return jsonify({
             "response": "ERROR: Course ID is invalid.",
             "success": False
@@ -398,7 +415,7 @@ def get_quiz():
         }), 400
         
     # Validate course existence
-    if not db.collection('courses').document(options["course_id"]).get().exists:
+    if not course_exists(options["course_id"]):
         return jsonify({
             "response": "ERROR: Course ID is invalid.",
             "success": False
@@ -453,7 +470,7 @@ def check_answer():
         }), 400
         
     # Validate course existence
-    if not db.collection('courses').document(options["course_id"]).get().exists:
+    if not course_exists(options["course_id"]):
         return jsonify({
             "response": "ERROR: Course ID is invalid.",
             "success": False
