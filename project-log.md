@@ -18,3 +18,6 @@
 
 # 14/05/2024
 [n3rdium](https://github.com/n3rdium): Added a [course template](https://github.com/N3RDIUM/everskill-course-template) and started building the course renderer. Also created a quiz renderer.
+
+# 15/05/2024
+[n3rdium](https://github.com/n3rdium): Cleaned up main.py, started working on the course search.
