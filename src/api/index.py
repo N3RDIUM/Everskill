@@ -24,7 +24,7 @@ class Course:
         self.quizzes = json.loads(requests.get(self.details["quizzes"]).text)
         self.achievements = json.loads(requests.get(self.details["achievements"]).text)
         
-        db.collection('course-metadata').document(str(sha256(url).hexdigest())).set({
+        db.collection('course-metadata').document(str(sha256(url.encode()).hexdigest())).set({
             "details": self.details,
             "quizzes": self.quizzes,
             "achievements": self.achievements
