@@ -26,7 +26,7 @@ class Course:
                 
         # This is just for search!
         db.collection('course-soup').document(str(sha256(url.encode()).hexdigest())).set({
-            "soup": self.details['title'] + ' ' + self.details['description'] + ' ' + ' '.join(self.details['tags']),
+            "soup": str(self.details['title'] + ' ' + self.details['description'] + ' ' + ' '.join(self.details['tags'])).lower(),
             "url": url,
             "id": id
         })
@@ -81,7 +81,7 @@ def search(ref, query):
     inp = query.lower().split(' ')
     for i in inp:
         # TODO! Implement relevance score thingy / add another layer of fuzzy searching!
-        ret.extend([x for x in ref.where("details.soup", ">=", i).where("details.soup", "<=", i + '\uf8ff').stream()])
+        ret.extend([x for x in ref.where("soup", ">=", i).where("soup", "<=", i + '\uf8ff').stream()])
         
     return [{"url": x.to_dict()['url'], "id": x.to_dict()['id']}for x in ret]
 
