@@ -22,6 +22,7 @@ For more info, look at the [project log](./project-log.md).
 ## TODO
 - [ ] Start working on the basic code for the course items: (assignees: [chet](https://github.com/chet-ag09))
 - [ ] Make anticheat! (assignees: [n3rdium](https://github.com/n3rdium) [!WANTED: SOMEONE INTO FRONTEND])
+- [ ] Create a course search feature because why not (assignees: [n3rdium](https://github.com/n3rdium))
 
 # Motivation
 We were inspired to make this platform by the creator of Duolingo. For more details, you can watch his Ted talk (linked below)

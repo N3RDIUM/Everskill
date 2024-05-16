@@ -24,6 +24,7 @@ class Course:
         self.quizzes = json.loads(requests.get(self.details["quizzes"]).text)
         self.achievements = json.loads(requests.get(self.details["achievements"]).text)
         
+        self.details['url'] = self.url
         db.collection('course-metadata').document(str(sha256(url.encode()).hexdigest())).set({
             "details": self.details,
             "quizzes": self.quizzes,
@@ -76,7 +77,7 @@ def course_exists(course_id):
     return db.collection('courses').document(course_id).get().exists
 
 def search(ref, query):
-    return [x for x in ref.where("details.title", ">=", query).stream()]
+    return [x for x in ref.where("details.title", ">=", query).where("details.title", "<=", query + '\uf8ff').stream()]
 
 # Routing
 @app.route('/api/new-user/', methods=['POST'])
