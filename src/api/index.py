@@ -574,6 +574,10 @@ def view_course(course_id):
         course_id=course_id
     )
 
+@app.route('/search/')
+def search_ui():
+    return render_template('search.html')
+
 # Driver
 if __name__ == "__main__":
     if dev: app.run(debug=True, port=5050)
