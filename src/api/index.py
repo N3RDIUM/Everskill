@@ -1,11 +1,12 @@
 # Imports
+from hashlib import sha256
 from pywebpush import webpush
 import os, json, uuid, bleach, requests
 from flask import Flask, request, jsonify, render_template
 from firebase_admin import initialize_app, firestore, credentials
 
 # DEV MODE
-dev = json.load(open(os.path.join(os.path.dirname(__file__), 'static/devmode.json')))['enabled']
+dev = 'dev' in os.environ
 
 # Initialization stuff
 app = Flask(__name__)
@@ -23,7 +24,7 @@ class Course:
         self.quizzes = json.loads(requests.get(self.details["quizzes"]).text)
         self.achievements = json.loads(requests.get(self.details["achievements"]).text)
         
-        db.collection('course-metadata').document(str(hash(url))).set({
+        db.collection('course-metadata').document(str(sha256(url).hexdigest())).set({
             "details": self.details,
             "quizzes": self.quizzes,
             "achievements": self.achievements
@@ -481,6 +482,7 @@ def check_answer():
     if token != options['token']:
         return jsonify({
             "response": "ERROR: Invalid auth token.",
+            "success": False
         }), 400
         
     # Fetch course metadata
@@ -501,7 +503,18 @@ def check_answer():
         "check": correct
     })
 
-@app.route('/api/course-search/')
+@app.route('/api/course-search/', methods=['POST'])
+def search_course():
+    # Validate request
+    options = request.get_json()
+    if 'query' not in options:
+        return jsonify({
+            "response": "ERROR: Query not provided.",
+            "success": False
+        }), 400
+        
+    # Search for courses
+    ref = db.collection("course-metadata")
 
 # Templates routing
 @app.route("/")
