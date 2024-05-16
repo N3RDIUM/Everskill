@@ -21,3 +21,6 @@
 
 # 15/05/2024
 [n3rdium](https://github.com/n3rdium): Cleaned up main.py, started working on the course search.
+
+# 16/05/2024
+[n3rdium](https://github.com/n3rdium): Moved api routes to `/api`, moved all the code from `src/API` to just `src`, worked out an easier way to manage dev mode, still working on the course search.
