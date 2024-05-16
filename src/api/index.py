@@ -75,6 +75,9 @@ def validate_token(username, token):
 def course_exists(course_id):
     return db.collection('courses').document(course_id).get().exists
 
+def search(ref, query):
+    return [x for x in ref.where("details.title", ">=", query).stream()]
+
 # Routing
 @app.route('/api/new-user/', methods=['POST'])
 def new_user():
@@ -515,6 +518,13 @@ def search_course():
         
     # Search for courses
     ref = db.collection("course-metadata")
+    res = search(ref, options['query'])
+    
+    # Return the results
+    return jsonify({
+        "results": [x.to_dict() for x in res],
+        "success": True
+    })
 
 # Templates routing
 @app.route("/")
