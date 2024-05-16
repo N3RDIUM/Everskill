@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, render_template
 from firebase_admin import initialize_app, firestore, credentials
 
 # DEV MODE
-dev = True
+dev = json.load(open(os.path.join(os.path.dirname(__file__), 'devmode.json')))['enabled']
 
 # Initialization stuff
 app = Flask(__name__)
