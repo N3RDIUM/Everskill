@@ -18,17 +18,23 @@ db = firestore.client()
 # Course class because why not
 # TODO! Use the html sanitizer!
 class Course:
-    def __init__(self, url: str) -> None:
+    def __init__(self, url: str, id: str) -> None:
         self.url = url
         self.details = json.loads(requests.get(self.url).text)
         self.quizzes = json.loads(requests.get(self.details["quizzes"]).text)
         self.achievements = json.loads(requests.get(self.details["achievements"]).text)
         
-        self.details['url'] = self.url
+        details = dict((k, self.lowerify(v)) for k,v in self.details.items())
+        quizzes = dict((k, self.lowerify(v)) for k,v in self.quizzes.items())
+        achievements = dict((k, self.lowerify(v)) for k,v in self.achievements.items())
+                
+        # This is just for search!
         db.collection('course-metadata').document(str(sha256(url.encode()).hexdigest())).set({
-            "details": self.details,
-            "quizzes": self.quizzes,
-            "achievements": self.achievements
+            "details": details,
+            "quizzes": quizzes,
+            "achievements": achievements,
+            "url": url,
+            "id": id
         })
 
     def render(self, page: str = 'home') -> list:
@@ -51,7 +57,12 @@ class Course:
     
     def coins(self, qid, idx) -> int:
         return int(self.quizzes[qid]['questions'][int(idx)]['coins'])
-
+    
+    def lowerify(self, value):
+        if not isinstance(value, str):
+            return value
+        return value.lower()
+        
 # Functions
 def user_exists(username):
     return db.collection('users').document(username).get().exists
@@ -77,7 +88,12 @@ def course_exists(course_id):
     return db.collection('courses').document(course_id).get().exists
 
 def search(ref, query):
-    return [x for x in ref.where("details.title", ">=", query).where("details.title", "<=", query + '\uf8ff').stream()]
+    ret = []
+    inp = query.lower().split(' ')
+    for i in inp:
+        ret.extend([x for x in ref.where("details.title", ">=", i).where("details.title", "<=", i + '\uf8ff').stream()])
+        
+    return [{"url": x.to_dict()['url'], "id": x.to_dict()['id']}for x in ret]
 
 # Routing
 @app.route('/api/new-user/', methods=['POST'])
@@ -392,7 +408,7 @@ def course_render():
     
     # Fetch course metadata
     course_meta = db.collection('courses').document(options["course_id"]).get().to_dict()['metadata']
-    course = Course(course_meta)
+    course = Course(course_meta, options["course_id"])
     details = course.details
     
     # Return it
@@ -428,7 +444,7 @@ def get_quiz():
         
     # Fetch course metadata
     course_meta = db.collection('courses').document(options["course_id"]).get().to_dict()['metadata']
-    course = Course(course_meta)
+    course = Course(course_meta, options["course_id"])
     quiz = course.get_quiz(options["quiz_id"])
     
     # Return it
@@ -491,7 +507,7 @@ def check_answer():
         
     # Fetch course metadata
     course_meta = db.collection('courses').document(options["course_id"]).get().to_dict()['metadata']
-    course = Course(course_meta)
+    course = Course(course_meta, options["course_id"])
     coins = course.coins(options['quiz_id'], options['question_index'])
     correct = course.verify_answer(options['quiz_id'], options['question_index'], options['answer_index'])
     
@@ -523,7 +539,7 @@ def search_course():
     
     # Return the results
     return jsonify({
-        "results": [x.to_dict() for x in res],
+        "results": res,
         "success": True
     })
 
@@ -560,4 +576,4 @@ def view_course(course_id):
 
 # Driver
 if __name__ == "__main__":
-    if dev: app.run(debug=True)
+    if dev: app.run(debug=True, port=5050)
