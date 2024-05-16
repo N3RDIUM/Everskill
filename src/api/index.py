@@ -23,16 +23,10 @@ class Course:
         self.details = json.loads(requests.get(self.url).text)
         self.quizzes = json.loads(requests.get(self.details["quizzes"]).text)
         self.achievements = json.loads(requests.get(self.details["achievements"]).text)
-        
-        details = dict((k, self.lowerify(v)) for k,v in self.details.items())
-        quizzes = dict((k, self.lowerify(v)) for k,v in self.quizzes.items())
-        achievements = dict((k, self.lowerify(v)) for k,v in self.achievements.items())
                 
         # This is just for search!
-        db.collection('course-metadata').document(str(sha256(url.encode()).hexdigest())).set({
-            "details": details,
-            "quizzes": quizzes,
-            "achievements": achievements,
+        db.collection('course-soup').document(str(sha256(url.encode()).hexdigest())).set({
+            "soup": self.details['title'] + ' ' + self.details['description'] + ' ' + ' '.join(self.details['tags']),
             "url": url,
             "id": id
         })
@@ -57,11 +51,6 @@ class Course:
     
     def coins(self, qid, idx) -> int:
         return int(self.quizzes[qid]['questions'][int(idx)]['coins'])
-    
-    def lowerify(self, value):
-        if not isinstance(value, str):
-            return value
-        return value.lower()
         
 # Functions
 def user_exists(username):
@@ -91,7 +80,8 @@ def search(ref, query):
     ret = []
     inp = query.lower().split(' ')
     for i in inp:
-        ret.extend([x for x in ref.where("details.title", ">=", i).where("details.title", "<=", i + '\uf8ff').stream()])
+        # TODO! Implement relevance score thingy / add another layer of fuzzy searching!
+        ret.extend([x for x in ref.where("details.soup", ">=", i).where("details.soup", "<=", i + '\uf8ff').stream()])
         
     return [{"url": x.to_dict()['url'], "id": x.to_dict()['id']}for x in ret]
 
@@ -534,7 +524,7 @@ def search_course():
         }), 400
         
     # Search for courses
-    ref = db.collection("course-metadata")
+    ref = db.collection("course-soup")
     res = search(ref, options['query'])
     
     # Return the results
