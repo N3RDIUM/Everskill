@@ -12,7 +12,7 @@ function submit() {
     let username = document.getElementById('username').value;
     let password = sha256.hex(document.getElementById('username').value);
 
-    fetch('/signin-upass', {
+    fetch('/api/signin-upass/', {
         method: 'POST',
         body: JSON.stringify({
             username: username,

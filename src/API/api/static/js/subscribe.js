@@ -52,7 +52,7 @@ function subscribeUser() {
                 'Received PushSubscription: ',
                 JSON.stringify(pushSubscription),
             );
-            fetch('/subscribe-pushnotify', {
+            fetch('/api/subscribe-pushnotify', {
                 method: 'POST',
                 body: JSON.stringify({
                     username: username,

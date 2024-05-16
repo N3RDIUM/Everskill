@@ -19,7 +19,7 @@
             let token = localStorage.getItem('everskill-token');
 
             // TODO! HANDLE ERRORS FROM THE SERVER
-            fetch('/course-render/', {
+            fetch('/api/course-render/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -40,7 +40,7 @@
                 for (let i = 0; i < quizElements.length; ++i) {
                     const quizElement = quizElements[i];
                     const quizId = quizElement.getAttribute("data-quizid");
-                    fetch('/quiz-get/', {
+                    fetch('/api/quiz-get/', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -96,7 +96,7 @@
                         }
                         
                         // Validate options
-                        fetch('/quiz-check/', {
+                        fetch('/api/quiz-check/', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'

@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, render_template
 from firebase_admin import initialize_app, firestore, credentials
 
 # DEV MODE
-dev = False
+dev = True
 
 # Initialization stuff
 app = Flask(__name__)
@@ -75,7 +75,7 @@ def course_exists(course_id):
     return db.collection('courses').document(course_id).get().exists
 
 # Routing
-@app.route('/new-user/', methods=['POST'])
+@app.route('/api/new-user/', methods=['POST'])
 def new_user():
     options = request.get_json()
     
@@ -118,7 +118,7 @@ def new_user():
         "token": token
     }), 200
     
-@app.route('/signin-upass/', methods=['POST'])
+@app.route('/api/signin-upass/', methods=['POST'])
 def sign_in():
     options = request.get_json()
     
@@ -150,7 +150,7 @@ def sign_in():
         "token": token
     }), 200
 
-@app.route('/get-user/', methods=['POST'])
+@app.route('/api/get-user/', methods=['POST'])
 def get_user():
     options = request.get_json()
     
@@ -173,7 +173,7 @@ def get_user():
         "success": True
     }), 200
     
-@app.route('/subscribe-pushnotify/', methods=['POST'])
+@app.route('/api/subscribe-pushnotify/', methods=['POST'])
 def sub_push():
     options = request.get_json()
     
@@ -227,7 +227,7 @@ def sub_push():
         "success": True
     }), 200
     
-@app.route('/subscribe-course/', methods=['POST'])
+@app.route('/api/subscribe-course/', methods=['POST'])
 def sub_course():
     options = request.get_json()
     
@@ -292,7 +292,7 @@ def sub_course():
         "success": True
     }), 200
 
-@app.route('/unsubscribe-course/', methods=['POST'])
+@app.route('/api/unsubscribe-course/', methods=['POST'])
 def unsub_course():
     options = request.get_json()
     
@@ -364,7 +364,7 @@ def unsub_course():
         "success": True
     }), 200
     
-@app.route('/course-render/', methods=['POST'])
+@app.route('/api/course-render/', methods=['POST'])
 def course_render():
     # Validate request
     options = request.get_json()
@@ -397,7 +397,7 @@ def course_render():
         "render": course.render(options["page"])
     })
     
-@app.route('/quiz-get/', methods=['POST'])
+@app.route('/api/quiz-get/', methods=['POST'])
 def get_quiz():
     # Validate request
     options = request.get_json()
@@ -432,7 +432,7 @@ def get_quiz():
         "quiz": quiz
     })
     
-@app.route('/quiz-check/', methods=['POST'])
+@app.route('/api/quiz-check/', methods=['POST'])
 def check_answer():
     # Validate request
     options = request.get_json()
@@ -468,7 +468,7 @@ def check_answer():
             "response": "ERROR: Auth token not provided.",
             "success": False
         }), 400
-        
+    
     # Validate course existence
     if not course_exists(options["course_id"]):
         return jsonify({
@@ -500,6 +500,8 @@ def check_answer():
         "success": True,
         "check": correct
     })
+
+@app.route('/api/course-search/')
 
 # Templates routing
 @app.route("/")
