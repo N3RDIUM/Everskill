@@ -90,6 +90,7 @@ def search(ref, query):
     return [{"url": x.to_dict()['url'], "id": x.to_dict()['id']}for x in ret]
 
 # Routing
+# TODO! Reduce the amount of duplicate firestore queries you make for speed and price reduction
 @app.route('/api/new-user/', methods=['POST'])
 def new_user():
     options = request.get_json()
@@ -545,6 +546,29 @@ def search_course():
         "success": True
     })
 
+@app.route('/api/user-profile/', methods=['POST'])
+def api_profile():
+    # Validate request
+    options = request.get_json()
+    if 'username' not in options:
+        return jsonify({
+            "response": "ERROR: Query not provided.",
+            "success": False
+        }), 400
+    
+    # Check if the profile exists
+    if not db.collection('users').document(options['username']).get().exists:
+        return jsonify({
+            "response": "ERROR: User does not exist.",
+            "success": False
+        }), 400
+        
+    # Return the profile
+    return jsonify({
+        "profile": db.collection('users').document(options['username']).get().to_dict(),
+        "success": True
+    })
+
 # Templates routing
 @app.route("/")
 def index():
@@ -579,6 +603,10 @@ def view_course(course_id):
 @app.route('/search/')
 def search_ui():
     return render_template('search.html')
+
+@app.route('/user/<string:username>/')
+def profile(username):
+    return render_template('profile.html', u=username)
 
 # Driver
 if __name__ == "__main__":
