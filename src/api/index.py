@@ -49,8 +49,13 @@ class Course:
     def verify_answer(self, qid, idx, ans) -> bool:
         return self.quizzes[qid]['questions'][int(idx)]['answer'] == ans
     
+    def is_last_question(self, qid, idx) -> bool:
+        return int(idx) >= len(self.quizzes[qid]['questions']) - 1
+    
     def coins(self, qid, idx) -> int:
         return int(self.quizzes[qid]['questions'][int(idx)]['coins'])
+    def gems(self, qid) -> int:
+        return int(self.quizzes[qid]['gems'])
         
 # Functions
 def user_exists(username):
@@ -499,6 +504,7 @@ def check_answer():
     course_meta = db.collection('courses').document(options["course_id"]).get().to_dict()['metadata']
     course = Course(course_meta, options["course_id"])
     coins = course.coins(options['quiz_id'], options['question_index'])
+    gems = course.gems(options['quiz_id'])
     correct = course.verify_answer(options['quiz_id'], options['question_index'], options['answer_index'])
     
     # Add coins to the user profile if the answer is correct
@@ -506,6 +512,12 @@ def check_answer():
         db.collection('users').document(options['username']).update({
             "coins": int(db.collection('users').document(options['username']).get().to_dict()['coins']) + coins
         })
+        if course.is_last_question(options['quiz_id'], options['answer_index']):
+            # Add gems to the user profile if the answer is correct
+            if correct:
+                db.collection('users').document(options['username']).update({
+                    "gems": int(db.collection('users').document(options['username']).get().to_dict()['gems']) + gems
+                })
     
     # Return it
     return jsonify({
