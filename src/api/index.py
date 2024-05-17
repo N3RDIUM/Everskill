@@ -124,6 +124,7 @@ def new_user():
         "achievements": [],
         "patches": [],
         "profilepic": '',
+        "bio": '',
         'courses': [],
         "interests": []
     })
