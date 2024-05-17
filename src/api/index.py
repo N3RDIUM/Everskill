@@ -48,9 +48,8 @@ class Course:
         
     def verify_answer(self, qid, idx, ans) -> bool:
         return self.quizzes[qid]['questions'][int(idx)]['answer'] == ans
-    
     def is_last_question(self, qid, idx) -> bool:
-        return int(idx) >= len(self.quizzes[qid]['questions']) - 1
+        return int(idx) >= len(self.quizzes[qid]['questions'])
     
     def coins(self, qid, idx) -> int:
         return int(self.quizzes[qid]['questions'][int(idx)]['coins'])
