@@ -27,8 +27,8 @@ window.onload = () => {
             interests    = data.interests;
             profilepic   = data.profilepic;
             
-            document.getElementById('settings-form').innerHTML = `Username: Username switcher coming soon!
-Password: Password switcher coming soon!
+            document.getElementById('settings-form').innerHTML = `Username: Username switcher coming soon!<br>
+Password: Password switcher coming soon!<br>
 Bio: <input type=text id=bio value=${bio}><br>
 Interests: <div id=interests></div>
 Add interests: <input type=text id=add-interest>
