@@ -65,35 +65,53 @@ class StreakThread:
         
     def run(self):
         last = 0
+        DAY = 3600 * 24
+        REMINDER_PRE = DAY / 24
+        INTERVAL = DAY / 12
         while True:
-            if not time.time() - last > 3600:
+            if not time.time() - last > INTERVAL:
                 continue
             
             users = db.collection('users').get()
             for uid in users:
-                user = users[uid].to_dict()
+                user = uid.to_dict()
                 last_update = user['lastStreakUpdate']
-                if firestore.firestore.SERVER_TIMESTAMP - last_update > 3600 * 24:
-                    if firestore.firestore.SERVER_TIMESTAMP - user['lastActive'] > 3600 * 24:
-                        if 'webpush' in db.collection('creds').document(uid).get().to_dict():
+                if time.time() - last_update > DAY:
+                    if time.time() - user['lastActive'] > DAY:
+                        if 'webpush' in db.collection('creds').document(uid.id).get().to_dict():
                             webpush(
-                                json.loads(str(db.collection('creds').document(uid).get().to_dict()['webpush'])),
+                                json.loads(str(db.collection('creds').document(uid.id).get().to_dict()['webpush'])),
                                 json.dumps({
                                     "body": f"Oh no! You've lost your precious streak. What to do now? Get back to learning and build a longer streak!",
                                     "icon": '../icons/owl.svg',
                                     "title": 'You lost your Everskill streak!'
                                 }),
                                 vapid_private_key=vapid_private_key,
-                                vapid_claims={"sub": "https://everskill.vercel.app/"}
+                                vapid_claims={"sub": "mailto:n3rdium@gmail.com"}
                             )
-                        db.collection('users').document(uid).update({
+                        db.collection('users').document(uid.id).update({
                             'streak': 0
                         })
                     else:
-                        db.collection('users').document(uid).update({
+                        db.collection('users').document(uid.id).update({
                             'streak': user['streak'] + 1
                         })
-                elif firestore.firestore.SERVER_TIMESTAMP - last_update > 3600 * 22:
+                        if user['highestStreak'] < user['streak'] + 1:
+                            db.collection('users').document(uid.id).update({
+                                'highestStreak': user['streak'] + 1
+                            })
+                            if 'webpush' in db.collection('creds').document(uid.id).get().to_dict():
+                                webpush(
+                                    json.loads(str(db.collection('creds').document(uid.id).get().to_dict()['webpush'])),
+                                    json.dumps({
+                                        "body": f"Congrats! You're on your highest streak yet: {user['streak'] + 1}. Keep it up!",
+                                        "icon": '../icons/owl.svg',
+                                        "title": 'New Everskill streak record!'
+                                    }),
+                                    vapid_private_key=vapid_private_key,
+                                    vapid_claims={"sub": "mailto:n3rdium@gmail.com"}
+                                )
+                elif time.time() - last_update > DAY - REMINDER_PRE:
                     if 'webpush' in db.collection('creds').document(uid).get().to_dict():
                             webpush(
                                 json.loads(str(db.collection('creds').document(uid).get().to_dict()['webpush'])),
@@ -143,7 +161,7 @@ def search(ref, query):
 
 def update_timestamp(username):
     db.collection('users').document(username).update({
-        "lastActive": firestore.firestore.SERVER_TIMESTAMP
+        "lastActive": time.time()
     })
 
 # Routing
@@ -186,7 +204,8 @@ def new_user():
         'courses': [],
         "interests": [],
         "streak": 0,
-        "lastStreakUpdate": 0
+        "lastStreakUpdate": 0,
+        "highestStreak": 0
     })
     update_timestamp(options['username'])
     
@@ -363,7 +382,7 @@ def sub_course():
                 "title": 'Everskill Course Unsubscribed'
             }),
             vapid_private_key=vapid_private_key,
-            vapid_claims={"sub": "https://everskill.vercel.app/"}
+            vapid_claims={"sub": "mailto:n3rdium@gmail.com"}
         )
     
     return jsonify({
@@ -435,7 +454,7 @@ def unsub_course():
                 "title": 'Everskill Notification'
             }),
             vapid_private_key=vapid_private_key,
-            vapid_claims={"sub": "https://everskill.vercel.app/"}
+            vapid_claims={"sub": "mailto:n3rdium@gmail.com"}
         )
     
     return jsonify({
