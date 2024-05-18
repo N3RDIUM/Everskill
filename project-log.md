@@ -27,3 +27,8 @@
 
 # 17/05/2024
 [n3rdium](https://github.com/n3rdium): Added user profiles. Streak system also completed. Notifications are now working on mobile devices.
+
+# 18/05/2024
+[n3rdium](https://github.com/n3rdium): Added a lot of stuff, fixed navigation between course pages. Backend is approximately 85% complete!
+
+[chet](https://github.com/chet-ag09): Created the first official Everskill course! Making some history here.

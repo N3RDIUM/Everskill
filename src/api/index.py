@@ -664,9 +664,10 @@ def api_profile():
 
 # Templates routing
 @app.route("/")
-def index():
+def index(): # TODO: Suggest courses based on user interests
     return render_template('index.html')
 
+# TODO! Make a user profile settings page!
 @app.route("/signup/")
 def signup():
     return render_template('signup.html')
