@@ -3,7 +3,7 @@ if (!localStorage.getItem("everskill-token") && !localStorage.getItem("everskill
     window.location.href = '/signin';
 }
 
-function askPermission() {
+function doIt() {
     return new Promise(function (resolve, reject) {
         const permissionResult = Notification.requestPermission(function (result) {
             resolve(result);
@@ -14,7 +14,10 @@ function askPermission() {
         }
     }).then(function (permissionResult) {
         if (permissionResult !== 'granted') {
+            alert('Could not get permission for sending notifications')
             throw new Error("We weren't granted permission.");
+        } else {
+            subscribeUser()
         }
     });
 }
@@ -44,29 +47,31 @@ function subscribeUser() {
                 userVisibleOnly: true,
                 applicationServerKey: urlBase64ToUint8Array(pubkey)
             };
-            return registration.pushManager.subscribe(subscribeOptions);
-        })
-        .then(function (pushSubscription) {
-            console.log(
-                'Received PushSubscription: ',
-                JSON.stringify(pushSubscription),
-            );
-            fetch('/api/subscribe-pushnotify', {
-                method: 'POST',
-                body: JSON.stringify({
-                    username: username,
-                    token: token,
-                    subscription: JSON.stringify(pushSubscription)
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(async res => {
-                let response = await res.json();
-                if(!response.success) {
-                    alert(response.response);
-                }
+            registration.pushManager.subscribe(subscribeOptions).then(function (pushSubscription) {
+                console.log(
+                    'Received PushSubscription: ',
+                    JSON.stringify(pushSubscription),
+                );
+                fetch('/api/subscribe-pushnotify', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        username: username,
+                        token: token,
+                        subscription: JSON.stringify(pushSubscription)
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(async res => {
+                    let response = await res.json();
+                    if(!response.success) {
+                        alert(response.response);
+                    }
+                }).catch(err => {
+                    alert(err)
+                });
             });
-            return pushSubscription;
-        });
+        }).catch(err => {
+            alert(err)
+        })
 }
