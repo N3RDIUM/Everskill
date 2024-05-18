@@ -661,14 +661,56 @@ def api_profile():
         "profile": db.collection('users').document(options['username']).get().to_dict(),
         "success": True
     })
+    
+@app.route('/api/update-profile/', methods=['POST'])
+def update_profile():
+    # Validate request
+    options = request.get_json()
+    if 'username' not in options:
+        return jsonify({
+            "response": "ERROR: Query not provided.",
+            "success": False
+        }), 400
+    if 'token' not in options:
+        return jsonify({
+            "response": "ERROR: Auth token not provided.",
+            "success": False
+        }), 400
+    if 'updates' not in options:
+        return jsonify({
+            "response": "ERROR: Updates dict not provided.",
+            "success": False
+        }), 400
+        
+    # Validate auth token
+    token = db.collection('creds').document(options['username']).get().to_dict()['token']
+    if token != options['token']:
+        return jsonify({
+            "response": "ERROR: Invalid auth token.",
+            "success": False
+        }), 400
+    
+    # Check if the user exists
+    if not db.collection('users').document(options['username']).get().exists:
+        return jsonify({
+            "response": "ERROR: User does not exist.",
+            "success": False
+        }), 400
+        
+    # Update the profile
+    db.collection('users').document(options['username']).set(options['updates'], merge=True)
+    
+    # Return the profile
+    return jsonify({
+        "success": True
+    })
 
 # Templates routing
 @app.route("/")
 def index(): # TODO: Suggest courses based on user interests
     return render_template('index.html')
 
-# TODO! Make a user profile settings page!
-# TODO! Make a change password page!
+# TODO! Make a change username/password page!
 @app.route("/signup/")
 def signup():
     return render_template('signup.html')
