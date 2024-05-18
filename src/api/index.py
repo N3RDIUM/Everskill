@@ -679,7 +679,7 @@ def signin():
 def subscribe():
     return render_template('subscribe.html')
 
-@app.route('/course-view/<string:course_id>/')
+@app.route('/course/<string:course_id>/')
 def view_course(course_id):
     # Get course details
     if not db.collection('courses').document(course_id).get().exists:
