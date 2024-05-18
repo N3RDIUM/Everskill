@@ -89,6 +89,11 @@ def search(ref, query):
         
     return [{"url": x.to_dict()['url'], "id": x.to_dict()['id']}for x in ret]
 
+def update_timestamp(username):
+    db.collection('users').document(username).update({
+        "lastActive": firestore.firestore.SERVER_TIMESTAMP
+    })
+
 # Routing
 # TODO! Reduce the amount of duplicate firestore queries you make for speed and price reduction
 @app.route('/api/new-user/', methods=['POST'])
@@ -127,8 +132,10 @@ def new_user():
         "profilepic": '',
         "bio": '',
         'courses': [],
-        "interests": []
+        "interests": [],
+        "streak": 0
     })
+    update_timestamp(options['username'])
     
     return jsonify({
         "success": True,
@@ -290,6 +297,7 @@ def sub_course():
     db.collection('users').document(options['username']).update({
         "courses": courses + [options['course_id']]
     })
+    update_timestamp(options['username'])
     
     # Send a notification if the user has subscribed to notifications
     if 'webpush' in db.collection('creds').document(options['username']).get().to_dict():
@@ -519,6 +527,9 @@ def check_answer():
                 db.collection('users').document(options['username']).update({
                     "gems": int(db.collection('users').document(options['username']).get().to_dict()['gems']) + gems
                 })
+    
+    # Update the user's "lastActive" timestamp on the server
+    update_timestamp(options['username'])
     
     # Return it
     return jsonify({

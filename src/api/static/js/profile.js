@@ -20,9 +20,11 @@ window.onload = () => {
             let courses      = data.courses;
             let gems         = data.gems;
             let interests    = data.interests;
+            let lastActive   = data.lastActive;
             let level        = data.level;
             let patches      = data.patches;
             let profilepic   = data.profilepic;
+            let streak       = data.streak;
             
             document.getElementById('data').innerHTML = JSON.stringify(data, null, 4)
         }
