@@ -44,7 +44,6 @@ function subscribeUser() {
                 userVisibleOnly: true,
                 applicationServerKey: urlBase64ToUint8Array(pubkey)
             };
-            await navigator.serviceWorker.ready;
             return registration.pushManager.subscribe(subscribeOptions);
         })
         .then(function (pushSubscription) {
