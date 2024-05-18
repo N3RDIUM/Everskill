@@ -68,6 +68,7 @@ class StreakThread:
         DAY = 3600 * 24
         REMINDER_PRE = DAY / 24
         INTERVAL = DAY / 12
+        UINTERVAL = DAY / 4
         while True:
             if not time.time() - last > INTERVAL:
                 continue
@@ -76,7 +77,7 @@ class StreakThread:
             for uid in users:
                 user = uid.to_dict()
                 last_update = user['lastStreakUpdate']
-                if time.time() - last_update > DAY:
+                if time.time() - last_update > UINTERVAL:
                     if time.time() - user['lastActive'] > DAY:
                         if 'webpush' in db.collection('creds').document(uid.id).get().to_dict():
                             webpush(
@@ -111,6 +112,9 @@ class StreakThread:
                                     vapid_private_key=vapid_private_key,
                                     vapid_claims={"sub": "mailto:n3rdium@gmail.com"}
                                 )
+                    db.collection('users').document(uid.id).update({
+                        'lastStreakUpdate': time.time(),
+                    })
                 elif time.time() - last_update > DAY - REMINDER_PRE:
                     if 'webpush' in db.collection('creds').document(uid).get().to_dict():
                             webpush(
