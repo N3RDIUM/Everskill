@@ -1,4 +1,5 @@
 # Imports
+import threading, time
 from hashlib import sha256
 from pywebpush import webpush
 import os, json, uuid, bleach, requests
@@ -55,6 +56,57 @@ class Course:
         return int(self.quizzes[qid]['questions'][int(idx)]['coins'])
     def gems(self, qid) -> int:
         return int(self.quizzes[qid]['gems'])
+        
+# Streak updater thread which runs every hour
+class StreakThread:
+    def __init__(self):
+        self.thread = threading.Thread(target=self.run)
+        self.thread.start()
+        
+    def run(self):
+        last = 0
+        while True:
+            if not time.time() - last > 3600:
+                continue
+            
+            users = db.collection('users').get()
+            for uid in users:
+                user = users[uid].to_dict()
+                last_update = user['lastStreakUpdate']
+                if firestore.firestore.SERVER_TIMESTAMP - last_update > 3600 * 24:
+                    if firestore.firestore.SERVER_TIMESTAMP - user['lastActive'] > 3600 * 24:
+                        if 'webpush' in db.collection('creds').document(uid).get().to_dict():
+                            webpush(
+                                json.loads(str(db.collection('creds').document(uid).get().to_dict()['webpush'])),
+                                json.dumps({
+                                    "body": f"Oh no! You've lost your precious streak. What to do now? Get back to learning and build a longer streak!",
+                                    "icon": '../icons/owl.svg',
+                                    "title": 'You lost your Everskill streak!'
+                                }),
+                                vapid_private_key=vapid_private_key,
+                                vapid_claims={"sub": "https://everskill.vercel.app/"}
+                            )
+                        db.collection('users').document(uid).update({
+                            'streak': 0
+                        })
+                    else:
+                        db.collection('users').document(uid).update({
+                            'streak': user['streak'] + 1
+                        })
+                elif firestore.firestore.SERVER_TIMESTAMP - last_update > 3600 * 22:
+                    if 'webpush' in db.collection('creds').document(uid).get().to_dict():
+                            webpush(
+                                json.loads(str(db.collection('creds').document(uid).get().to_dict()['webpush'])),
+                                json.dumps({
+                                    "body": f"You're about to lose your Everskill streak in 2 hours. Make sure to save it before it gets sad and you need to start from scratch again!",
+                                    "icon": '../icons/owl.svg',
+                                    "title": "Everskill streak alert!"
+                                }),
+                                vapid_private_key=vapid_private_key,
+                                vapid_claims={"sub": "https://everskill.vercel.app/"}
+                            )
+                    pass
+            last = time.time()
         
 # Functions
 def user_exists(username):
@@ -133,7 +185,8 @@ def new_user():
         "bio": '',
         'courses': [],
         "interests": [],
-        "streak": 0
+        "streak": 0,
+        "lastStreakUpdate": 0
     })
     update_timestamp(options['username'])
     
@@ -241,7 +294,7 @@ def sub_push():
         json.dumps({
             "body": 'Welcome aboard! You have successfully subscribed to push notifications.',
             "icon": '../icons/owl.svg',
-            "title": 'Everskill Notification'
+            "title": 'Everskill Course Subscription'
         }),
         vapid_private_key=vapid_private_key,
         vapid_claims={"sub": "mailto:n3rdium@gmail.com"}
@@ -307,7 +360,7 @@ def sub_course():
             json.dumps({
                 "body": f"Welcome aboard! You have successfully subscribed to the course: {course_title}",
                 "icon": '../icons/owl.svg',
-                "title": 'Everskill Notification'
+                "title": 'Everskill Course Unsubscribed'
             }),
             vapid_private_key=vapid_private_key,
             vapid_claims={"sub": "https://everskill.vercel.app/"}
@@ -621,4 +674,5 @@ def profile(username):
 
 # Driver
 if __name__ == "__main__":
+    thread = StreakThread()
     if dev: app.run(debug=True, port=5050)
