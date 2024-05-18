@@ -68,7 +68,7 @@ class StreakThread:
         DAY = 3600 * 24
         REMINDER_PRE = DAY / 24
         INTERVAL = DAY / 12
-        UINTERVAL = DAY / 4
+        UINTERVAL = DAY
         while True:
             if not time.time() - last > INTERVAL:
                 continue
@@ -679,21 +679,11 @@ def signin():
 def subscribe():
     return render_template('subscribe.html')
 
-@app.route('/course/<string:course_id>/')
-def view_course(course_id):
-    # Get course details
-    if not db.collection('courses').document(course_id).get().exists:
-        return jsonify({
-            "response": "ERROR: Course ID is invalid.",
-            "success": False
-        }), 400
-    
-    return render_template(
-        "course-view-home.html",
-        course_id=course_id
-    )
-    
-@app.route('/course-view/<string:course_id>/<string:page>')
+@app.route('/course-preview/<string:course_id>/')
+def preview():
+    return "TODO", 200
+
+@app.route('/course/<string:course_id>/<string:page>/')
 def view_course_with_pageid(course_id, page):
     # Get course details
     if not db.collection('courses').document(course_id).get().exists:
