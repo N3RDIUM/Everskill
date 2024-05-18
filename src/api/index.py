@@ -689,8 +689,23 @@ def view_course(course_id):
         }), 400
     
     return render_template(
-        "course-view.html",
+        "course-view-home.html",
         course_id=course_id
+    )
+    
+@app.route('/course-view/<string:course_id>/<string:page>')
+def view_course_with_pageid(course_id, page):
+    # Get course details
+    if not db.collection('courses').document(course_id).get().exists:
+        return jsonify({
+            "response": "ERROR: Course ID is invalid.",
+            "success": False
+        }), 400
+    
+    return render_template(
+        "course-view.html",
+        course_id=course_id,
+        page=page
     )
 
 @app.route('/search/')
