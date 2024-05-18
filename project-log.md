@@ -26,4 +26,4 @@
 [n3rdium](https://github.com/n3rdium): Moved api routes to `/api`, moved all the code from `src/API` to just `src`, worked out an easier way to manage dev mode, made a basic search page.
 
 # 17/05/2024
-[n3rdium](https://github.com/n3rdium): Added user profiles. Working on streak system!
+[n3rdium](https://github.com/n3rdium): Added user profiles. Streak system also completed. Notifications are now working on mobile devices.
