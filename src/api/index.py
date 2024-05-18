@@ -701,6 +701,10 @@ def search_ui():
 def profile(username):
     return render_template('profile.html', u=username)
 
+@app.route('/upload/')
+def upload():
+    return render_template("upload.html")
+
 # Driver
 if __name__ == "__main__":
     thread = StreakThread()
