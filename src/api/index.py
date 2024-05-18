@@ -668,6 +668,7 @@ def index(): # TODO: Suggest courses based on user interests
     return render_template('index.html')
 
 # TODO! Make a user profile settings page!
+# TODO! Make a change password page!
 @app.route("/signup/")
 def signup():
     return render_template('signup.html')
@@ -710,6 +711,10 @@ def profile(username):
 @app.route('/upload/')
 def upload():
     return render_template("upload.html")
+
+@app.route('/profile/settings/')
+def settings():
+    return render_template("settings.html")
 
 # Driver
 if __name__ == "__main__":
