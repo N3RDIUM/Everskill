@@ -39,12 +39,12 @@ function urlBase64ToUint8Array(base64String) {
 function subscribeUser() {
     return navigator.serviceWorker
         .register('/static/js/service-worker.js')
-        .then(function (registration) {
+        .then(async function (registration) {
             const subscribeOptions = {
                 userVisibleOnly: true,
                 applicationServerKey: urlBase64ToUint8Array(pubkey)
             };
-
+            await navigator.serviceWorker.ready;
             return registration.pushManager.subscribe(subscribeOptions);
         })
         .then(function (pushSubscription) {
