@@ -24,7 +24,7 @@ For more info, look at the [project log](./project-log.md).
 - [x] Create the profile settings page (assignees: [n3rdium](https://github.com/n3rdium))
 
 ## TODO
-- [x] [IMPORTANT] *Start* writing the frontend (assignees: [!WANTED: SOMEONE INTO FRONTEND])
+- [x] [IMPORTANT] *Start* writing the frontend (assignees: [[chet](https://github.com/chet-ag09))
 - [x] Start working on the basic code for the course items: (assignees: [chet](https://github.com/chet-ag09))
 - [ ] Make anticheat! (assignees: [n3rdium](https://github.com/n3rdium) [!WANTED: SOMEONE INTO FRONTEND])
 - [ ] Make a leaderboard (assignees: [n3rdium](https://github.com/n3rdium))
