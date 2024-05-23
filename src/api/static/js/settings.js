@@ -7,8 +7,59 @@ if (!localStorage.getItem("everskill-token") && !localStorage.getItem("everskill
 let username = localStorage.getItem('everskill-username');
 let token = localStorage.getItem('everskill-token');
 
+// Other stuff
+var interestInput, interestTags, addInterestButton
+
+function handleAddInterest() {
+    const enteredInterest = interestInput.value.trim();
+
+    const newTag = document.createElement('div');
+    newTag.classList.add('tag');
+    newTag.innerText = enteredInterest;
+
+    const closeButton = document.createElement('span');
+    closeButton.classList.add('close');
+    closeButton.innerText = 'x';
+    closeButton.addEventListener('click', () => {
+        interestTags.removeChild(newTag);
+    });
+    newTag.appendChild(closeButton);
+
+    interestTags.appendChild(newTag);
+
+    interestInput.value = '';
+}
+function addInterest(enteredInterest) {
+    const newTag = document.createElement('div');
+    newTag.classList.add('tag');
+    newTag.innerText = enteredInterest;
+
+    const closeButton = document.createElement('span');
+    closeButton.classList.add('close');
+    closeButton.innerText = 'x';
+    closeButton.addEventListener('click', () => {
+        interestTags.removeChild(newTag);
+    });
+    newTag.appendChild(closeButton);
+
+    interestTags.appendChild(newTag);
+
+    interestInput.value = '';
+}
+
 let bio, interests, profilepic;
 window.onload = () => {
+    interestInput = document.getElementById('interests');
+    interestTags = document.getElementById('interest-tags');
+    addInterestButton = document.getElementById('add-interests');
+
+    addInterestButton.addEventListener('click', handleAddInterest);
+    interestInput.addEventListener('keyup', (event) => {
+        if (event.keyCode === 13) {
+            handleAddInterest();
+        }
+    });
+    
     fetch('/api/user-profile/', {
         method: 'POST',
         body: JSON.stringify({
@@ -27,29 +78,15 @@ window.onload = () => {
             interests    = data.interests;
             profilepic   = data.profilepic;
             
-            document.getElementById('settings-form').innerHTML = `Username: Username switcher coming soon!<br>
-Password: Password switcher coming soon!<br>
-Bio: <input type=text id=bio value=${bio}><br>
-Interests: <div id=interests></div>
-Add interests: <input type=text id=add-interest>
-<button onclick="addInterest()">Add interest</button><br>
-Profile picture: <img src="${profilepic}" alt="Profile picture" width=100 height=100><br>
-Change pfp URL: <input type=text id=pfp value=${profilepic}><br> (Upload to imgur and add the link here)`;
-            addInitialInterests(interests);
+            document.getElementById('bio').value           = bio;
+            document.getElementById('url-enter-img').value = profilepic;
+            document.getElementById('pfp-disp').src        = profilepic;
+
+            for(let interest of interests) {
+                addInterest(interest)
+            }
         }
     })
-}
-
-function addInitialInterests(interests) {
-    for (let i = 0; i < interests.length; i++) {
-        document.getElementById('interests').innerHTML += `<span class='interest'>${interests[i]}</span>`;
-        // TODO! Add some way to remove interests
-    }
-}
-function addInterest() {
-    let interest = document.getElementById('add-interest').value;
-    document.getElementById('add-interest').value = '';
-    document.getElementById('interests').innerHTML += `<span class='interest'>${interest}</span>`;
 }
 
 function update() {
@@ -60,8 +97,8 @@ function update() {
             token: token,
             updates: {
                 bio: document.getElementById('bio').value,
-                interests: Array.from(document.getElementsByClassName('interest')).map(e => e.innerText),
-                profilepic: document.getElementById('pfp').value
+                interests: Array.from(document.getElementsByClassName('tag')).map(e => e.innerHTML.split('<span')[0]),
+                profilepic: document.getElementById('url-enter-img').value
             }
         }),
         headers: {

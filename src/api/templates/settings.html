@@ -1,24 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <!--Metadata-->
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="/static/assets/everskill-logo.png" type="image/x-icon">
-        <title>Everskill - Settings</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="/static/assets/everskill-logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="/static/css/settings.css">
 
-        <!--Libs-->
-        <script src="/static/js/hashes.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-        <!--Scripts-->
-        <script src="/static/js/settings.js"></script>
-        <script src="/static/js/signout.js"></script>
-    </head>
-    <body>
-        Everskill settings
-        <div id="settings-form"></div>
-        <button onclick="signout()">Sign out</button><br>
-        <button onclick="update()">Update</button><br>
-        <button onclick="window.location.reload(true)">Discard changes</button><br>
-    </body>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=VT323&display=swap" rel="stylesheet">
+
+  <title>Everskill - Edit your profile</title>
+
+  <!--Libs-->
+  <script src="/static/js/hashes.js"></script>
+
+  <!--Scripts-->
+  <script src="/static/js/settings.js"></script>
+  <script src="/static/js/signout.js"></script>
+  <script src="/static/js/hamburger.js"></script>
+</head>
+<body>
+
+  <div class="top-nav">
+	<a href="#"><h1 class="main-heading">Everskill</h1></a>
+	<a href="#"><p class="top-nav-item">Courses</p></a>
+	<a href="#"><p class="top-nav-item">Home</p></a>
+
+	<div class="hamburger-menu" style="position: static;">
+	  <div class="nav" id="nav">
+		<a href="javascript:void(0)" class="close" onclick="closeNav()">&times;</a>
+		<a href="#">Home</a>
+		<a href="#">Courses</a>
+	  </div>
+	  <span onclick="openNav()" class="open" id="open">&#9776</span>
+	</div>
+
+  </div>
+
+  <h1 class="heading">EDIT PROFILE</h1>
+
+  <section id="main">
+	<img src="/static/assets/profile-place.png" alt="profile" class="img-profile" id="pfp-disp">
+  </section>
+
+  <div class="enter-area">
+	<p class="text-ins">Profile picture URL:</p>
+	<input name="profile-url" id="url-enter-img" class="info-enter" placeholder="Enter Image URL"></input>
+
+	<p class="text-ins">Bio:</p>
+	<input id=bio name="profile-url" class="info-enter" placeholder="Write something about yourself..."></input>
+
+	<p class="text-ins">Interests:</p>
+
+	<div class="interest-tags" id="interest-tags"></div>
+	<input name="profile-url" class="info-enter" id="interests" placeholder="Add tags.."></input>
+	<button class="btn" id="add-interests">+</button>
+  </div>
+
+  <div class="glow"></div>
+
+  <div class="buttons">
+	<button class="btn" id="sign-out" onclick="signout()">SIGN OUT</button>
+	<button class="btn" id="save-changes" onclick="update()">SAVE CHANGES</button>
+	<button class="btn" id="discard" onclick="window.location.reload(true)">DISCARD</button>
+  </div>
+</body>
 </html>

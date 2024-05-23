@@ -1,0 +1,309 @@
+*
+{
+  margin: 0;
+  padding: 0;
+}
+
+html
+{
+    background: #000000;
+    font-family: 'Noto Sans';
+    color: white;
+
+    scroll-behavior: smooth;
+}
+
+.top-nav
+{
+    background-color: #0000006f;
+    position: fixed;
+    top: 0;
+    width: 100%;
+
+    backdrop-filter: blur(5px);
+}
+
+.main-heading
+{
+    font-family: "VT323";
+    font-weight: 400;
+    font-size: 3em;
+    color: white;
+    padding-top: 10px;
+    padding-left: 20px;
+    margin-right: 0;
+
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    text-decoration: none;
+}
+.top-nav-item
+{
+    font-family: "VT323";
+    font-size: 1.5em;
+    padding-right: 20px;
+    float: right;
+    padding-top: 20px;
+    padding-left: 20px;
+    color: #00FFFF;
+}
+
+.glow {
+  width: 400px;
+  height: 400px;
+  border-radius: 400px;
+  background-color: #0066ff;
+  filter: blur(256px);
+  position: absolute;
+  left: 35%;
+  top: 30%;
+  z-index: -1;
+}
+
+.heading
+{
+    font-family: "VT323";
+    font-weight: 400;
+    font-size: 3em;
+    color: white;
+    padding-top: 10px;
+    padding-left: 20px;
+    margin-top: 100px;
+    text-align: center;
+}
+
+#main
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+
+}
+
+.img-profile
+{
+  text-align: center;
+  height: 220px;
+  margin-top: 20px;
+}
+
+.enter-area
+{
+  text-align: center;
+  margin-top: 50px;
+}
+
+#interests
+{
+  width: 250px;
+}
+
+#add-interests
+{
+  height: 40px;
+  width: 50px;
+  margin-top: 0;
+  margin-left: 0;
+
+  background: #048DDA;
+  box-shadow: 0 8px 0 #0079BC;
+}
+
+#add-interests:active
+{
+  box-shadow: none;
+  transform: translateY(8px);
+  color: white;
+}
+
+.info-enter
+{
+  height: 40px;
+  width: 300px;
+  background: #353535;
+  color: white;
+  font-family: "Noto Sans";
+  border: none;
+  padding: 0 10px;
+  border-radius: 15px;
+
+  box-shadow: 0 8px 0 #292929;
+}
+
+#url-enter-img
+{
+  background-image:url('../assets/edit-ico.png');   
+  background-position:right;   
+  background-repeat:no-repeat;
+}
+
+.text-ins
+{
+  margin-bottom: 10px;
+  margin-top: 20px;
+  font-size: small;
+}
+
+.btn
+{
+  height: 40px;
+  width: 150px;
+  border-radius: 15px;
+  border: none;
+  margin-top: 50px;
+  margin-left: 20px;
+  font-weight: 700;
+  color: #353535;
+  cursor: pointer;
+}
+
+.buttons
+{
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+#sign-out
+{
+  background: #DA0404;
+  box-shadow: 0 8px 0 #A30000;
+}
+
+#sign-out:active
+{
+  box-shadow: none;
+  transform: translateY(8px);
+  color: white;
+}
+
+#save-changes
+{
+  background: #048DDA;
+  box-shadow: 0 8px 0 #0079BC;
+}
+
+#save-changes:active
+{
+  box-shadow: none;
+  transform: translateY(8px);
+  color: white;
+}
+
+#discard
+{
+  background: #4B4B4B;
+  box-shadow: 0 8px 0 #3e3e3e;
+  color: white  ;
+}
+
+#discard:active
+{
+  box-shadow: none;
+  transform: translateY(8px);
+  color: white;
+}
+
+footer
+{
+  text-align: center;
+  margin-top: 100px;
+}
+
+
+.hambuger-menu {
+  height: 100vh;
+  width: 100%;  
+}
+
+
+.open {
+  color: #00FFFF;
+  font-size: 30px;
+  float: left;
+  cursor: pointer;
+  display: block;
+  animation: slide-from-left 1s;
+  float: right;
+  transition: 0.6s;
+  visibility: hidden;  
+}
+.open:hover {
+  opacity: 0.8;
+  color: #048DDA;
+  transform: translateY(-10px);
+}
+
+
+.nav {
+  height: 100vh;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  background-color: #0079BC;
+  transition: 0.6s;
+  display: block;
+  overflow-x: hidden;
+  color: black;
+  font-family: "VT323";
+
+  text-align: center;
+  
+}
+.nav a {
+  clear: left;
+  color: white;
+  display: block;
+  text-decoration: none;
+  font-size: 22px;
+  transition: 0.6s;
+  padding: 0.5em;
+}
+.nav a:not(:first-child):hover {
+  background-color: rgba(0, 137, 211, 0.9);
+  letter-spacing: 2px;
+  box-shadow: 10px 0 15px rgba(0, 145, 255, 0.9);
+}
+.close {
+  float: left;
+  font-size: 30px;
+  margin: 1em 0 0 1em;
+}
+
+
+@media only screen and (max-width: 768px)
+{
+  .top-nav-item
+  {
+    display: none;
+  }
+
+  .open
+  {
+    visibility: visible;
+  }
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  margin: 2px 5px;
+  border-radius: 20px;
+  background-color: #565656;
+  cursor: pointer;
+  line-height: 1.5;
+
+  font-size: 12px;
+  border: 10px white;
+}
+
+.tag .close {
+  margin-left: 5px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  font-size: 12px;
+  font-weight: 700;
+}
