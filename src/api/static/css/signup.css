@@ -1,0 +1,102 @@
+html
+{
+    margin: 0;
+    padding: 0;
+    color: white;
+    background: #000;
+    font-family: "Noto-Sans", sans-serif;
+    text-align: center;
+}
+
+
+.logo-img
+{
+    height: 100px;
+}
+
+.logo-text
+{
+    font-family: "VT323";
+    font-weight: 200;
+}
+
+.logo
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+.entry
+{
+    height: 40px;
+    width: 300px;
+    border: none;
+    border-radius: 15px;
+    padding-left: 10px;
+
+    box-shadow: 0 8px 0 #cbcbcb;
+}
+
+.signup p
+{
+    font-size: 14px;
+}
+
+.btn
+{
+  height: 40px;
+  width: 150px;
+  border-radius: 15px;
+  border: none;
+  margin-top: 50px;
+  margin-left: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  background: #048DDA;
+  box-shadow: 0 8px 0 #0079BC;
+}
+
+
+.btn:active
+{
+  box-shadow: none;
+  transform: translateY(8px);
+  color: rgb(37, 37, 37);
+}
+
+.log-in-link
+{
+  font-size: 12px;
+  color: #048DDA; 
+  text-decoration: none;
+}
+
+.log-in-link:active
+{
+  color: #ffffff;
+}
+
+.glow {
+  width: 400px;
+  height: 400px;
+  border-radius: 400px;
+  background-color: #0066ff;
+  filter: blur(256px);
+  position: absolute;
+  left: 35%;
+  top: 30%;
+  z-index: -1;
+}
+
+
+@media only screen and (max-width: 375px)
+{
+.entry
+{
+  width: 200px;
+
+}
+}

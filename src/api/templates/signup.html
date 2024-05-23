@@ -1,21 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <!--Metadata-->
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="/static/assets/everskill-logo.png" type="image/x-icon">
-        <title>Everskill - Sign Up</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Everskill - Sign Up</title>
+    
+    <link rel="shortcut icon" href="/static/assets/everskill-logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/signup.css">
 
-        <!--Libs-->
-        <script src="/static/js/hashes.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-        <!--Scripts-->
-        <script src="/static/js/signup.js"></script>
-    </head>
-    <body>
-        <input type="text" id="username">
-        <input type="password" id="password">
-        <button onclick="submit()">Submit</button>
-    </body>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=VT323&display=swap" rel="stylesheet">
+
+    <!--Libs-->
+    <script src="/static/js/hashes.js"></script>
+
+    <!--Scripts-->
+    <script src="/static/js/signup.js"></script>
+</head>
+<body>
+    <div class="glow"></div>
+    <div class="logo">
+    <img src="assets/everskill-logo.png" alt="logo" class="logo-img">
+    <h1 class="logo-text">EVERSKILL</h1>
+    </div>
+
+    <div class="signup">
+        <p>Sign Up</p>
+        <input type="text" class="entry" placeholder="Enter an username..." id="username">
+        <p>Password</p>
+        <input type="text" class="entry" placeholder="Select Password..." id="password">
+    </div>
+
+    <a href="#" class="log-in-link"><p>Have an account? Log in here!</p></a>    
+    
+    <button class="btn" id="signup" onclick="submit()">SIGN ME UP!</button>
+</body>
 </html>
