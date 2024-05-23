@@ -34,4 +34,4 @@
 [chet](https://github.com/chet-ag09): Created the first official Everskill course! Making some history here.
 
 # 23/05/2024
-[chet](https://github.com/chet-ag09): The front-end is 80% done, home page, and some styling left!
+[chet](https://github.com/chet-ag09): The front-end is 80% done, home page and some styling left!
