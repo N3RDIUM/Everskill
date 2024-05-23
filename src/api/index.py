@@ -84,8 +84,8 @@ class StreakThread:
                                 json.loads(str(db.collection('creds').document(uid.id).get().to_dict()['webpush'])),
                                 json.dumps({
                                     "body": f"Oh no! You've lost your precious streak. What to do now? Get back to learning and build a longer streak!",
-                                    "icon": '../icons/owl.svg',
-                                    "badge": '../icons/owl.svg',
+                                    "icon": '../icons/raven.png',
+                                    "badge": '../icons/raven.png',
                                     "title": 'You lost your Everskill streak!'
                                 }),
                                 vapid_private_key=vapid_private_key,
@@ -107,8 +107,8 @@ class StreakThread:
                                     json.loads(str(db.collection('creds').document(uid.id).get().to_dict()['webpush'])),
                                     json.dumps({
                                         "body": f"Congrats! You're on your highest streak yet: {user['streak'] + 1}. Keep it up!",
-                                        "icon": '../icons/owl.svg',
-                                        "badge": '../icons/owl.svg',
+                                        "icon": '../icons/raven.png',
+                                        "badge": '../icons/raven.png',
                                         "title": 'New Everskill streak record!'
                                     }),
                                     vapid_private_key=vapid_private_key,
@@ -123,8 +123,8 @@ class StreakThread:
                                 json.loads(str(db.collection('creds').document(uid).get().to_dict()['webpush'])),
                                 json.dumps({
                                     "body": f"You're about to lose your Everskill streak in 2 hours. Make sure to save it before it gets sad and you need to start from scratch again!",
-                                    "icon": '../icons/owl.svg',
-                                    "badge": '../icons/owl.svg',
+                                    "icon": '../icons/raven.png',
+                                    "badge": '../icons/raven.png',
                                     "title": "Everskill streak alert!"
                                 }),
                                 vapid_private_key=vapid_private_key,
@@ -319,8 +319,8 @@ def sub_push():
         json.loads(str(db.collection('creds').document(options['username']).get().to_dict()['webpush'])),
         json.dumps({
             "body": 'Welcome aboard! You have successfully subscribed to push notifications.',
-            "icon": '../icons/owl.svg',
-            "badge": '../icons/owl.svg',
+            "icon": '../icons/raven.png',
+            "badge": '../icons/raven.png',
             "title": 'Everskill Course Subscription'
         }),
         vapid_private_key=vapid_private_key,
@@ -386,8 +386,8 @@ def sub_course():
             json.loads(str(db.collection('creds').document(options['username']).get().to_dict()['webpush'])),
             json.dumps({
                 "body": f"Welcome aboard! You have successfully subscribed to the course: {course_title}",
-                "icon": '../icons/owl.svg',
-                "badge": '../icons/owl.svg',
+                "icon": '../icons/raven.png',
+                "badge": '../icons/raven.png',
                 "title": 'Everskill Course Unsubscribed'
             }),
             vapid_private_key=vapid_private_key,
@@ -459,8 +459,8 @@ def unsub_course():
             json.loads(str(db.collection('creds').document(options['username']).get().to_dict()['webpush'])),
             json.dumps({
                 "body": f"Sorry to see you go! You have successfully unsubscribed from the course: {course_title}",
-                "icon": '../icons/owl.svg',
-                "badge": '../icons/owl.svg',
+                "icon": '../icons/raven.png',
+                "badge": '../icons/raven.png',
                 "title": 'Everskill Notification'
             }),
             vapid_private_key=vapid_private_key,
