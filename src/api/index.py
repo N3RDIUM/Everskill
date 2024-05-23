@@ -706,9 +706,13 @@ def update_profile():
     })
 
 # Templates routing
-@app.route("/")
-def index(): # TODO: Suggest courses based on user interests
+@app.route('/')
+def index():
     return render_template('index.html')
+
+@app.route("/app/")
+def homepage(): # TODO: Suggest courses based on user interests
+    return render_template('app.html')
 
 # TODO! Make a change username/password page!
 @app.route("/signup/")

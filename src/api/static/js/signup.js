@@ -26,7 +26,7 @@ function submit() {
         if(response.success) {
             window.localStorage.setItem('everskill-token', response.token);
             window.localStorage.setItem('everskill-username', username);
-            window.location.href = '/';
+            window.location.href = '/app/';
         } else {
             console.log(response)
             alert(response.response);

@@ -72,7 +72,7 @@ function update() {
         if(data.success) {
             let ret = confirm('Update successful! Return to homepage?')
             if(ret) {
-                window.location.href = '/';
+                window.location.href = '/app/';
             }
         }
     })
