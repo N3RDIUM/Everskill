@@ -7,7 +7,7 @@ html
     font-family: "Noto-Sans", sans-serif;
     text-align: center;
 }
-
+* { background: transparent };
 
 .logo-img
 {
