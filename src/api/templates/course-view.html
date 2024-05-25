@@ -32,7 +32,7 @@
                 const data = await res.json();
                 document.getElementById('_content').innerHTML = data.render[1];
 
-                const inject = docuemnt.getElementById('inject')
+                const inject = document.getElementById('inject')
                 if(inject) {
                     document.body.innerHTML += inject.innerHTML;
                 }
