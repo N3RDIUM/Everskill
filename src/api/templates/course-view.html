@@ -34,7 +34,18 @@
 
                 const inject = document.getElementById('inject')
                 if(inject) {
-                    document.body.innerHTML += inject.innerHTML;
+                    for(let script of inject.getElementsByTagName('script')) {
+                        let newScript = document.createElement('script');
+                        newScript.src = script.src;
+                        document.head.appendChild(newScript);
+                    }
+                    for(let link of inject.getElementsByTagName('link')) {
+                        let newLink = document.createElement('link');
+                        newLink.href = link.href;
+                        newLink.rel = link.rel;
+                        newLink.type = link.type;
+                        document.head.appendChild(newLink);
+                    }
                 }
 
                 // Process all interactive content
