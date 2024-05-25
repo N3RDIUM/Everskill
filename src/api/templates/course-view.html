@@ -7,6 +7,17 @@
         <link rel="shortcut icon" href="/static/assets/everskill-logo.png" type="image/x-icon">
         <link rel="stylesheet" href="https://raw.githubusercontent.com/chet-ag09/css-lib-everskill/main/main.css" type="text/css">
         <title>Everskill - Course View</title>
+        <style>
+            .load-container {
+                width: 100vw;
+                height: 100vh;
+                background-color: white;
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+                flex-direction: column;
+            }
+        </style>
 
         <!--Scripts-->
         <script>
@@ -18,6 +29,11 @@
             // Get username and token from local storage
             let username = localStorage.getItem('everskill-username');
             let token = localStorage.getItem('everskill-token');
+
+            fetch('https://api.adviceslip.com/advice').then(async res => {
+                let data = await res.json();
+                document.getElementById('_content').innerHTML = `<div class="load-container"><img class="spinner" src='/static/assets/loading.gif'></img><div class='loadhint'>Free advice: ${data.slip.advice}</div></div>`;
+            })
 
             // TODO! HANDLE ERRORS FROM THE SERVER
             fetch('/api/course-render/', {
@@ -31,6 +47,7 @@
                 })
             }).then(async res => {
                 const data = await res.json();
+                document.getElementById('_content').innerHTML = ''
                 document.getElementById('_content').innerHTML = data.render[1];
 
                 const inject = document.getElementById('inject')
@@ -152,6 +169,8 @@
         </script>
     </head>
     <body>
-        <div class="course-content" id="_content"></div>
+        <div class="course-content" id="_content">
+            
+        </div>
     </body>
 </html>
