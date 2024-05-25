@@ -30,9 +30,21 @@
             let username = localStorage.getItem('everskill-username');
             let token = localStorage.getItem('everskill-token');
 
+            let loaded = false;
+
             fetch('https://api.adviceslip.com/advice').then(async res => {
-                let data = await res.json();
-                document.getElementById('_content').innerHTML = `<div class="load-container"><img class="spinner" src='/static/assets/loading.gif'></img><div class='loadhint'>Free advice: ${data.slip.advice}</div></div>`;
+                if(!loaded) {
+                    let data = await res.json();
+                    document.getElementById('_content').innerHTML = `<div class="load-container"><img class="spinner" src='/static/assets/loading.gif'></img><div class='loadhint'>Free advice: ${data.slip.advice}</div></div>`;
+                    setTimeout(() => {
+                        if(!loaded) {
+                            document.getElementById('_content').innerHTML += `<div class='loadhint'>Looks like it's taking too much time to load this page. Refreshing...</div>`;
+                            setTimeout(() => {
+                                window.location.reload(true);
+                            }, 1000)
+                        }
+                    }, 4000)
+                }
             })
 
             // TODO! HANDLE ERRORS FROM THE SERVER
@@ -49,6 +61,7 @@
                 const data = await res.json();
                 document.getElementById('_content').innerHTML = ''
                 document.getElementById('_content').innerHTML = data.render[1];
+                loaded = true;
 
                 const inject = document.getElementById('inject')
                 if(inject) {
