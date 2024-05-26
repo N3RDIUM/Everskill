@@ -16,6 +16,7 @@
                 justify-content: space-evenly;
                 align-items: center;
                 flex-direction: column;
+                text-align: center;
             }
         </style>
 
@@ -44,12 +45,12 @@
                     document.getElementById('_content').innerHTML = `<div class="load-container"><img class="spinner" src='/static/assets/loading.gif'></img><div class='loadhint'>Did you know? ${data.joke}</div></div>`;
                     setTimeout(() => {
                         if(!loaded) {
-                            document.getElementById('_content').innerHTML += `<div class='loadhint'>Looks like it's taking too much time to load this page. Refreshing...</div>`;
+                            document.getElementById('_content').innerHTML = `<div class="load-container"><img class="spinner" src='/static/assets/loading.gif'></img><div class='loadhint'>Did you know? ${data.joke}<br>Looks like it's taking too much time to load this page. Refreshing...</div></div>`;
                             setTimeout(() => {
                                 window.location.reload(true);
-                            }, 1000)
+                            }, 2000)
                         }
-                    }, 4000)
+                    }, 3000)
                 }
             })
 
