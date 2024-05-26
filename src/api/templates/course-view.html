@@ -32,6 +32,12 @@
 
             let loaded = false;
 
+            window.onload = () => {
+                if(!loaded) {
+                    document.getElementById('_content').innerHTML = `<div class="load-container"><img class="spinner" src='/static/assets/loading.gif'></img><div class='loadhint'>Did you know?</div></div>`;
+                }
+            }
+
             fetch('https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit&type=single').then(async res => {
                 if(!loaded) {
                     let data = await res.json();
