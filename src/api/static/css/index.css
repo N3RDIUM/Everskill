@@ -88,10 +88,10 @@ html, body
     border-radius: 400px;
     background-color: #0066ff;
     filter: blur(256px);
-    z-index: 0;
+    z-index: -69;
     position: absolute;
     left: 60%;
-  }
+}
 
 .home-img
 {
