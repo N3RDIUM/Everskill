@@ -10,7 +10,9 @@ html
 
 .logo-img
 {
-    height: 100px;
+    height: 64px;
+    width: 64px;
+    margin-right: 16px;
 }
 
 .logo-text
