@@ -504,6 +504,54 @@ def course_render():
         "render": course.render(options["page"])
     })
     
+@app.route('/api/course-details-batch/', methods=['POST'])
+def course_details():
+    # Validate request
+    options = request.get_json()
+    
+    ret = []
+    for course_id in options:
+        # Validate course existence
+        if not course_exists(course_id):
+            return jsonify({
+                "response": "ERROR: Course ID is invalid.",
+                "success": False
+            }), 400
+        
+        # Fetch course metadata
+        course_meta = db.collection('courses').document(course_id).get().to_dict()['metadata']
+        course = Course(course_meta, course_id)
+        details = course.details
+        details['id'] = course_id
+        
+        # Add it to ret
+        ret.append(details)
+    
+    # Return it
+    return jsonify({
+        "success": True,
+        "courses": ret
+    })
+    
+@app.route('/api/my-courses/', methods=['POST'])
+def my_courses():
+    # Validate request
+    options = request.get_json()
+    if 'username' not in options:
+        return jsonify({
+            "response": "ERROR: Username not provided.",
+            "success": False
+        }), 400
+        
+    # Get user courses
+    courses = db.collection('users').document(options['username']).get().to_dict()['courses']
+    
+    # Return the results
+    return jsonify({
+        "results": courses,
+        "success": True
+    })
+    
 @app.route('/api/quiz-get/', methods=['POST'])
 def get_quiz():
     # Validate request
@@ -639,6 +687,34 @@ def search_course():
         "success": True
     })
 
+@app.route('/api/course-recommend/', methods=['POST'])
+def recommend_course():
+    # Validate request
+    options = request.get_json()
+    if 'username' not in options:
+        return jsonify({
+            "response": "ERROR: Username not provided.",
+            "success": False
+        }), 400
+        
+    # Get user tags
+    courses = db.collection('users').document(options['username']).get().to_dict()['courses']
+    tags = db.collection('users').document(options['username']).get().to_dict()['interests']
+        
+    # Search for courses
+    ref = db.collection("course-soup")
+    res = search(ref, ' '.join(tags))
+    ret = []
+    for course in res:
+        if course['id'] not in courses:
+            ret.append(course)
+    
+    # Return the results
+    return jsonify({
+        "results": ret,
+        "success": True
+    })
+
 @app.route('/api/user-profile/', methods=['POST'])
 def api_profile():
     # Validate request
@@ -767,7 +843,7 @@ def change_username():
     return "Work in progress!", 200
 
 @app.route('/profile/change-password')
-def change_username():
+def change_password():
     return "Work in progress!", 200
 
 # Driver

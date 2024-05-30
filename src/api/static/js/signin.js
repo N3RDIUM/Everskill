@@ -4,7 +4,7 @@ var sha256 =  new Hashes.SHA256;
 // If there is already everskill-token and everskill-username in the local storage
 if (localStorage.getItem("everskill-token") && localStorage.getItem("everskill-username")) {
     alert("You're already signed in!");
-    window.location.href = '/';
+    window.location.href = '/app/';
 }
 
 // Submit button clicked.

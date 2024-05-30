@@ -1,22 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <!--Metadata-->
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="/static/assets/everskill-logo.png" type="image/x-icon">
-        <title>Everskill - Home</title>
+<html>
+  <head>
+    <!--Metadata-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/static/assets/everskill-logo.png" type="image/x-icon">
+    <title>Everskill - Home</title>
 
-        <!--Libs-->
-        <script src="/static/js/hashes.js"></script>
+    <!--Libs-->
+    <script src="/static/js/hashes.js"></script>
 
-        <!--Scripts-->
-        <script src="/static/js/index.js"></script>
-        <script src="/static/js/signout.js"></script>
-    </head>
-    <body>
-        Everskill home
-        <button onclick="signout()">Sign out</button><br>
-        <div id="username-thing"></div>
-    </body>
+    <!--Scripts-->
+    <script src="/static/js/index.js"></script>
+    <script src="/static/js/signout.js"></script>
+    <script src="/static/js/hamburger.js"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css?family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Inter&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/home.css" />
+    <link rel="stylesheet" href="/static/css/nav.css" />
+  </head>
+    <div class="top-nav">
+      <a href="#"><h1 class="main-heading">Everskill</h1></a>
+    
+      <div class="hamburger-menu" style="position: static;">
+        <div class="nonnav" id="nonnav">
+          <a href="/app/"><p class="top-nav-item">Home</p></a>
+        </div>
+        <div class="nav" id="nav">
+        <a href="javascript:void(0)" class="close" onclick="closeNav()">&times;</a>
+        <a href="#">Home</a>
+        <a href="#">Courses</a>
+        </div>
+        <span onclick="openNav()" class="open" id="open">&#9776</span>
+      </div>
+    
+      </div>
+    <div class="start-container">
+      <h1 class="greet">Greetings<span id="username" class="username"></span>!</h1><br>
+      <span class="msg">We have some cool courses, picked just for you!</span>
+    </div>
+    <h1 class="my-courses-title">My Courses</h1>
+    <div class="courses" id="mine"><img class="spinner" src='/static/assets/loading.gif'></div>
+    <h1 class="my-courses-title">Recommended</h1>
+    <div class="courses" id="recommended"><img class="spinner" src='/static/assets/loading.gif'></div>
+    </div>
+  </body>
 </html>
