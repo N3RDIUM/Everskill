@@ -714,7 +714,7 @@ def index():
 def homepage(): # TODO: Suggest courses based on user interests
     return render_template('app.html')
 
-# TODO! Make a change username/password page!
+# TODO! Make a change username/password page!=
 @app.route("/signup/")
 def signup():
     return render_template('signup.html')
@@ -761,6 +761,14 @@ def upload():
 @app.route('/profile/settings/')
 def settings():
     return render_template("settings.html")
+
+@app.route('/profile/change-username')
+def change_username():
+    return "Work in progress!", 200
+
+@app.route('/profile/change-password')
+def change_username():
+    return "Work in progress!", 200
 
 # Driver
 if __name__ == "__main__":
