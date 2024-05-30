@@ -9,11 +9,54 @@
 
         <!--Scripts-->
         <script src="/static/js/search.js"></script>
+        <script src="/static/js/hamburger.js"></script>
+
+        <link
+        href="https://fonts.googleapis.com/css?family=VT323&display=swap"
+        rel="stylesheet"
+      />
+      <link
+        href="https://fonts.googleapis.com/css?family=Inter&display=swap"
+        rel="stylesheet"
+      />
+      <style>
+        .load-container {
+            width: 100vw;
+            height: calc(100vh - 300px);
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+    </style>
+        <link rel="stylesheet" href="/static/css/nav.css" />
+        <link rel="stylesheet" href="/static/css/search.css" />
+        <link rel="stylesheet" href="/static/css/coursecards.css" />
     </head>
     <body>
-        Search for courses
-        <input type="text" id="query">
-        <button onclick="search()">Search</button>
-        <table id="results" border="1"></table>
+        <div class="top-nav">
+            <a href="#"><h1 class="main-heading">Everskill</h1></a>
+          
+            <div class="hamburger-menu" style="position: static;">
+              <div class="nonnav" id="nonnav">
+                <a href="/app/"><p class="top-nav-item">Home</p></a>
+              </div>
+              <div class="nav" id="nav">
+              <a href="javascript:void(0)" class="close" onclick="closeNav()">&times;</a>
+              <a href="#">Home</a>
+              <a href="#">Courses</a>
+              </div>
+              <span onclick="openNav()" class="open" id="open">&#9776</span>
+            </div>
+        </div>
+        <div class="start-container">
+            <h1 class="greet">Search for courses</h1><br>
+            <div class="searchit">
+                <input type="text" id="query" class="searchbar">
+                <button onclick="search()" class="searchbutton">🔎</button>
+            </div>
+        </div>
+        <div id="results" class="courses"></div>
     </body>
 </html>

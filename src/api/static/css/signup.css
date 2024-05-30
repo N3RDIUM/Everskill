@@ -7,7 +7,6 @@ html
     font-family: "Noto-Sans", sans-serif;
     text-align: center;
 }
-* { background: transparent };
 
 .logo-img
 {
@@ -80,13 +79,13 @@ html
 }
 
 .glow {
-  width: 400px;
-  height: 400px;
-  border-radius: 400px;
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
   background-color: #0066ff;
-  filter: blur(256px);
+  filter: blur(512px);
   position: absolute;
-  left: 35%;
+  left: 45%;
   top: 30%;
   z-index: -1;
 }

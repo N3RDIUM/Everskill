@@ -26,18 +26,14 @@ html, body
 .greet {
   color: rgb(187, 187, 187)
 }
-.username {
-  color: white;
+
+.searchbar {
+    width: 25vw;
+    height: 32px;
+    border-radius: 6px;
 }
-.my-courses-title {
-  margin: 16px;
-  margin-left: 32px;
-}
-.searchlink {
-  margin-top: 12px;
-  padding: 8px;
-  background-color: white;
-  color: black;
-  text-decoration: none;
-  border-radius: 8px;
+.searchbutton {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
 }

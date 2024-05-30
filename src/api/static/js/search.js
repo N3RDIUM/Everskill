@@ -1,4 +1,16 @@
+function buildCourseHTML(image, title, description, id) {
+    return `<div class="course-card" onclick='window.location.href="/course/${id}/home/"'>
+    <img class="cover-img" src=${image}></img>
+    <div class="coursetxt">
+      <span class="course-title">${title}</span
+      ><br><span class="course-desc"
+        >${description}</span
+      ></div>
+    </div>`
+}
+
 function search() {
+    document.getElementById('results').innerHTML = '<div class="load-container"><img class="spinner" src="/static/assets/loading.gif"></div>';
     let input = document.getElementById('query').value;
     fetch('/api/course-search/', {
         method: 'POST',
@@ -9,18 +21,24 @@ function search() {
             'Content-Type': 'application/json'
         }
     }).then(async res => {
-        let data = await res.json();
-        data = data.results
-        let html = `<tr>
-    <th>id</th>
-    <th>url</th>
-</tr>`;
-        for (let i of data) {
-            html += `<tr>
-    <td>${i.id}</td>
-    <td><a href="${i.url}" target="_blank">${i.url}</a></td>
-</tr>`;
+        let response = await res.json();
+        let ids = [];
+        for(let item of response.results) {
+            ids.push(item.id);
         }
-        document.getElementById('results').innerHTML = html;
+        fetch('/api/course-details-batch/', {
+            method: 'POST',
+            body: JSON.stringify(ids),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(async res => {
+            const response = await res.json();
+            let html = '';
+            for(let item of response.courses) {
+                html += buildCourseHTML(item.coverart, item.title, item.description, item.id);
+            }
+            document.getElementById('results').innerHTML = html;
+        })
     })
 }

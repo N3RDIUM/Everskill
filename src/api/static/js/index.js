@@ -7,11 +7,6 @@ if (!localStorage.getItem("everskill-token") && !localStorage.getItem("everskill
 let username = localStorage.getItem('everskill-username');
 let token = localStorage.getItem('everskill-token');
 
-// Add the username to #username
-window.onload = () => {
-    document.getElementById('username').innerHTML = `, ${username}`;
-}
-
 function buildCourseHTML(image, title, description, id) {
     return `<div class="course-card" onclick='window.location.href="/course/${id}/home/"'>
     <img class="cover-img" src=${image}></img>
@@ -25,6 +20,7 @@ function buildCourseHTML(image, title, description, id) {
 
 // Get course recommendations
 window.onload = () => {
+    document.getElementById('username').innerHTML = `${username}`;
     fetch('/api/course-recommend/', {
         method: 'POST',
         body: JSON.stringify({
